@@ -39,10 +39,15 @@ if (revealElements.length > 0 && "IntersectionObserver" in window) {
 
 /* ---- Card glow follow cursor ---- */
 document.querySelectorAll(".card").forEach((card) => {
+  let rafId = 0;
   card.addEventListener("mousemove", (e) => {
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty("--mouse-x", (e.clientX - rect.left) + "px");
-    card.style.setProperty("--mouse-y", (e.clientY - rect.top) + "px");
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--mouse-x", (e.clientX - rect.left) + "px");
+      card.style.setProperty("--mouse-y", (e.clientY - rect.top) + "px");
+      rafId = 0;
+    });
   });
 });
 
@@ -61,7 +66,7 @@ if (heroH1) {
     if (i < fullText.length) {
       heroH1.insertBefore(document.createTextNode(fullText[i]), cursor);
       i++;
-      setTimeout(typeChar, 32);
+      setTimeout(typeChar, 50);
     } else {
       setTimeout(() => cursor.remove(), 2000);
     }
