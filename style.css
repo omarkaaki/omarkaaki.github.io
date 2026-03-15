@@ -571,6 +571,91 @@ h1 {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ---- Kali Terminal Widget ---- */
+.terminal-widget {
+  background: #1a1a2e;
+  border: 1px solid #2d2d4a;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow), 0 0 30px rgba(102, 247, 210, 0.05);
+  font-family: "Courier New", "Fira Code", monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #12121f;
+  border-bottom: 1px solid #2d2d4a;
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red { background: #ff5f57; }
+.terminal-dot.yellow { background: #febc2e; }
+.terminal-dot.green { background: #28c840; }
+
+.terminal-title {
+  margin-left: 8px;
+  color: #8f9ab8;
+  font-size: 0.78rem;
+  font-family: "Courier New", "Fira Code", monospace;
+}
+
+.terminal-body {
+  padding: 14px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.terminal-line {
+  white-space: nowrap;
+}
+
+.terminal-prompt {
+  color: #66f7d2;
+  font-weight: 700;
+}
+
+.terminal-cmd {
+  color: #ecf1ff;
+  cursor: default;
+}
+
+.terminal-output {
+  color: #a9b4d0;
+  padding-left: 4px;
+  margin-bottom: 8px;
+}
+
+.terminal-cursor {
+  color: #66f7d2;
+  animation: blink-terminal 1s step-end infinite;
+}
+
+@keyframes blink-terminal {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Terminal lines hidden initially for typing animation */
+.terminal-body .terminal-line,
+.terminal-body .terminal-output {
+  opacity: 0;
+}
+
+.terminal-body .terminal-line.typed,
+.terminal-body .terminal-output.typed {
+  opacity: 1;
+}
+
 /* ---- Reduced motion ---- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
