@@ -9,7 +9,8 @@
   <meta name="description" content="Omar Kaaki's personal portfolio website.">
   <link rel="stylesheet" href="css/style.css">
   <script>
-    if (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+    // Redirect main page to HTTPS (CSP upgrade-insecure-requests only covers sub-resources)
+    if (location.protocol !== "https:" && (location.hostname === "omarkaaki.me" || location.hostname === "omarkaaki.github.io")) {
       location.replace("https://" + location.hostname + location.pathname + location.search + location.hash);
     }
   </script>
