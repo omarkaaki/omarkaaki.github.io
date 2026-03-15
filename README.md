@@ -1,11 +1,16 @@
 # omarkaaki.github.io
 
-Personal portfolio website for Omar Kaaki, hosted on [GitHub Pages](https://omarkaaki.me).
+Cybersecurity portfolio website for Omar Kaaki, hosted on [GitHub Pages](https://omarkaaki.me).
 
 ## Structure
 
-- `index.html` — Main portfolio page
-- `css/style.css` — Stylesheet
+- `index.html` — Home page
+- `about.html` — About, education, and experience
+- `projects.html` — Cybersecurity projects
+- `skills.html` — Skills and tools
+- `contact.html` — Contact information
+- `style.css` — Stylesheet
+- `main.js` — Navigation script
 - `CNAME` — Custom domain configuration
 - `.nojekyll` — Disables Jekyll processing for direct file serving
 
