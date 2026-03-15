@@ -616,7 +616,7 @@ h1 {
 }
 
 .terminal-line {
-  white-space: nowrap;
+  white-space: pre-wrap;
 }
 
 .terminal-prompt {
