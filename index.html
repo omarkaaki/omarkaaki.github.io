@@ -3,130 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Omar Kaaki — Portfolio</title>
-  <meta name="description" content="Omar Kaaki's personal portfolio website.">
-  <link rel="stylesheet" href="css/style.css">
+  <title>Omar Kaaki | Portfolio</title>
+  <meta name="description" content="Modern cybersecurity portfolio for Omar Kaaki: SOC, DFIR, penetration testing, and secure systems engineering.">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  <!-- Navigation -->
-  <nav class="navbar" id="navbar">
-    <div class="container nav-container">
-      <a href="#hero" class="nav-logo">Omar Kaaki</a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
+  <nav class="navbar">
+    <div class="nav-container container">
+      <a class="brand" href="index.html"><span class="brand-dot"></span> Omar Kaaki</a>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
+        <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
+        <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
+        <li class="nav-item"><a href="skills.html" class="nav-link">Skills</a></li>
+        <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
       </ul>
+      <button class="hamburger" aria-label="Open menu"><span class="bar"></span></button>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="container hero-content">
-      <p class="hero-greeting">Hello, I'm</p>
-      <h1 class="hero-name">Omar Kaaki</h1>
-      <p class="hero-tagline">Developer &amp; Creator</p>
-      <a href="#contact" class="btn btn-primary">Get in Touch</a>
-    </div>
-  </section>
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="card highlight">
+            <div class="kicker">Cybersecurity Portfolio</div>
+            <h1>Building practical security solutions with engineering discipline.</h1>
+            <p class="lead">
+              I am Omar Kaaki, a senior Computer & Communications Engineering student at AUB focused on SOC operations,
+              DFIR workflows, and secure systems design. I build projects that are clean, measurable, and production-minded.
+            </p>
+            <div class="btn-row">
+              <a class="btn primary" href="projects.html">Explore Projects</a>
+              <a class="btn secondary" href="contact.html">Get in Touch</a>
+            </div>
+          </div>
 
-  <!-- About Section -->
-  <section class="section" id="about">
+          <aside class="card">
+            <h3>At a glance</h3>
+            <div class="metric-grid">
+              <div class="metric"><strong>5+</strong><span>Security Projects</span></div>
+              <div class="metric"><strong>3</strong><span>Internships</span></div>
+              <div class="metric"><strong>2026</strong><span>Graduation Year</span></div>
+            </div>
+            <p class="meta">Beirut, Lebanon - Open to internships, research, and security engineering opportunities.</p>
+            <div class="tag-row">
+              <span class="tag">SOC</span>
+              <span class="tag">DFIR</span>
+              <span class="tag">Pentesting</span>
+              <span class="tag">Linux</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">What I focus on</h2>
+        <p class="section-lead">Hands-on cybersecurity work supported by solid systems engineering fundamentals.</p>
+        <div class="grid three">
+          <div class="card">
+            <h3>Security Operations</h3>
+            <p>Alert triage, investigation, and incident response workflows using SIEM and monitoring pipelines.</p>
+          </div>
+          <div class="card">
+            <h3>Penetration Testing</h3>
+            <p>Structured recon and vulnerability assessment with repeatable methods and clear reporting.</p>
+          </div>
+          <div class="card">
+            <h3>Secure Systems</h3>
+            <p>Designing systems with reliability, observability, and security built into the implementation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Featured projects</h2>
+        <div class="grid two">
+          <div class="card">
+            <h3>Gmail Security Monitor & Automated Threat Response</h3>
+            <p>A workflow for detecting suspicious email activity and triggering rapid triage actions.</p>
+            <div class="meta">Gmail API, JavaScript, Automation</div>
+          </div>
+          <div class="card">
+            <h3>Threat Detection Pipeline</h3>
+            <p>A scalable log-ingestion and analysis concept integrating ELK and messaging infrastructure.</p>
+            <div class="meta">ELK, Kafka, Security Infrastructure</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <a class="btn secondary" href="projects.html">View all projects</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
     <div class="container">
-      <h2 class="section-title">About Me</h2>
-      <div class="about-content">
+      <div class="footer-row">
+        <p>© 2026 Omar Kaaki.</p>
         <p>
-          I'm a passionate developer who loves building things for the web.
-          I enjoy turning ideas into reality through clean, efficient code and
-          thoughtful design. I'm always eager to learn new technologies and
-          take on challenging projects.
+          <a href="projects.html">Projects</a> ·
+          <a href="skills.html">Skills</a> ·
+          <a href="contact.html">Contact</a>
         </p>
       </div>
     </div>
-  </section>
-
-  <!-- Skills Section -->
-  <section class="section section-alt" id="skills">
-    <div class="container">
-      <h2 class="section-title">Skills</h2>
-      <div class="skills-grid">
-        <div class="skill-card">
-          <h3>Front-End</h3>
-          <p>HTML, CSS, JavaScript</p>
-        </div>
-        <div class="skill-card">
-          <h3>Back-End</h3>
-          <p>Node.js, Python, APIs</p>
-        </div>
-        <div class="skill-card">
-          <h3>Tools</h3>
-          <p>Git, GitHub, VS Code</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects Section -->
-  <section class="section" id="projects">
-    <div class="container">
-      <h2 class="section-title">Projects</h2>
-      <div class="projects-grid">
-        <div class="project-card">
-          <h3>Portfolio Website</h3>
-          <p>My personal portfolio built with HTML and CSS, hosted on GitHub Pages.</p>
-          <a href="https://github.com/omarkaaki/omarkaaki.github.io" class="btn btn-outline" target="_blank" rel="noopener noreferrer">View Source</a>
-        </div>
-      </div>
-      <p class="projects-note">More projects coming soon!</p>
-    </div>
-  </section>
-
-  <!-- Contact Section -->
-  <section class="section section-alt" id="contact">
-    <div class="container">
-      <h2 class="section-title">Contact</h2>
-      <div class="contact-content">
-        <p>Want to work together or just say hello? Feel free to reach out!</p>
-        <a href="https://github.com/omarkaaki" class="btn btn-primary" target="_blank" rel="noopener noreferrer">GitHub Profile</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2026 Omar Kaaki. All rights reserved.</p>
-    </div>
   </footer>
-
-  <script>
-    // Mobile navigation toggle
-    (function () {
-      var toggle = document.getElementById('nav-toggle');
-      var links = document.getElementById('nav-links');
-      if (toggle && links) {
-        toggle.addEventListener('click', function () {
-          links.classList.toggle('active');
-          toggle.classList.toggle('active');
-        });
-        // Close menu when a link is clicked
-        var navAnchors = links.querySelectorAll('a');
-        for (var i = 0; i < navAnchors.length; i++) {
-          navAnchors[i].addEventListener('click', function () {
-            links.classList.remove('active');
-            toggle.classList.remove('active');
-          });
-        }
-      }
-    })();
-  </script>
-
+  <script src="main.js"></script>
 </body>
 </html>
