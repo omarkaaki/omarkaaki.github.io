@@ -27,7 +27,7 @@ npm run build  # Build for production
 
 ## Deployment
 
-The site auto-deploys via GitHub Actions on push to `main`. The workflow builds the Vite project and deploys to GitHub Pages.
+The site auto-deploys via GitHub Actions on push to the `portfolio` branch. The workflow builds the Vite project and deploys to GitHub Pages. The `main` branch is kept free for other use.
 
 ## Custom Domain & HTTPS Setup
 
