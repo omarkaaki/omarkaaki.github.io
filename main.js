@@ -73,3 +73,25 @@ if (heroH1) {
   }
   setTimeout(typeChar, 400);
 }
+
+/* ---- Terminal typing animation ---- */
+const terminalBody = document.getElementById("terminal-body");
+
+if (terminalBody) {
+  const items = terminalBody.querySelectorAll(".terminal-line, .terminal-output");
+  let idx = 0;
+  function showNextLine() {
+    if (idx < items.length) {
+      items[idx].classList.add("typed");
+      const el = items[idx];
+      /* scroll the terminal body to keep the latest line visible */
+      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      idx++;
+      /* prompt lines appear fast, commands/output slightly slower */
+      const delay = el.classList.contains("terminal-output") ? 350 : 180;
+      setTimeout(showNextLine, delay);
+    }
+  }
+  /* start after a short delay so the hero loads first */
+  setTimeout(showNextLine, 800);
+}
