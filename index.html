@@ -1,131 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-  <link rel="canonical" href="https://omarkaaki.me/">
-  <script>
-    if (location.protocol !== "https:" && (location.hostname === "omarkaaki.me" || location.hostname === "omarkaaki.github.io")) {
-      location.replace("https://" + location.hostname + location.pathname + location.search + location.hash);
-    }
-  </script>
-  <title>Omar Kaaki | Portfolio</title>
-  <meta name="description" content="Modern cybersecurity portfolio for Omar Kaaki: SOC, DFIR, penetration testing, and secure systems engineering.">
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <nav class="navbar">
-    <div class="nav-container container">
-      <a class="brand" href="index.html"><span class="brand-dot"></span> Omar Kaaki</a>
-      <ul class="nav-menu">
-        <li class="nav-item"><a href="index.html" class="nav-link active">Home</a></li>
-        <li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-        <li class="nav-item"><a href="projects.html" class="nav-link">Projects</a></li>
-        <li class="nav-item"><a href="skills.html" class="nav-link">Skills</a></li>
-        <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
-      <button class="hamburger" aria-label="Open menu"><span class="bar"></span></button>
-    </div>
-  </nav>
-
-  <main>
-    <section class="hero">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="card highlight">
-            <div class="kicker">Cybersecurity Portfolio</div>
-            <h1 data-typed="Building practical security solutions with engineering discipline."></h1>
-            <p class="lead">
-              I am Omar Kaaki, a senior Computer &amp; Communications Engineering student at AUB focused on SOC operations,
-              DFIR workflows, and secure systems design. I build projects that are clean, measurable, and production-minded.
-            </p>
-            <div class="btn-row">
-              <a class="btn primary" href="projects.html">Explore Projects</a>
-              <a class="btn secondary" href="contact.html">Get in Touch</a>
-            </div>
-          </div>
-
-          <aside class="terminal-widget">
-            <div class="terminal-bar">
-              <span class="terminal-dot red"></span>
-              <span class="terminal-dot yellow"></span>
-              <span class="terminal-dot green"></span>
-              <span class="terminal-title">root@kali:~</span>
-            </div>
-            <div class="terminal-body" id="terminal-body">
-              <div class="terminal-line"><span class="terminal-prompt">┌──(root㉿kali)-[~/forensics]</span></div>
-              <div class="terminal-line"><span class="terminal-prompt">└─$</span> <span class="terminal-cmd" data-cmd="whoami">whoami</span></div>
-              <div class="terminal-output">omar_kaaki — DFIR Analyst / Security Engineer</div>
-              <div class="terminal-line"><span class="terminal-prompt">┌──(root㉿kali)-[~/forensics]</span></div>
-              <div class="terminal-line"><span class="terminal-prompt">└─$</span> <span class="terminal-cmd" data-cmd="cat skills.txt">cat skills.txt</span></div>
-              <div class="terminal-output">[+] SOC Operations &amp; Incident Response<br>[+] Digital Forensics &amp; Triage<br>[+] Penetration Testing<br>[+] Windows &amp; Linux Forensics</div>
-              <div class="terminal-line"><span class="terminal-prompt">┌──(root㉿kali)-[~/forensics]</span></div>
-              <div class="terminal-line"><span class="terminal-prompt">└─$</span> <span class="terminal-cmd" data-cmd="./status.sh">./status.sh</span></div>
-              <div class="terminal-output">[*] Location: Beirut, Lebanon<br>[*] Status: Open to opportunities<br>[*] Graduation: 2026</div>
-              <div class="terminal-line"><span class="terminal-prompt">┌──(root㉿kali)-[~/forensics]</span></div>
-              <div class="terminal-line"><span class="terminal-prompt">└─$</span> <span class="terminal-cursor">█</span></div>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <div class="container">
-        <h2 class="section-title">What I focus on</h2>
-        <p class="section-lead">Hands-on cybersecurity work supported by solid systems engineering fundamentals.</p>
-        <div class="grid three reveal-stagger">
-          <div class="card">
-            <h3>Security Operations</h3>
-            <p>Alert triage, investigation, and incident response workflows using SIEM and monitoring pipelines.</p>
-          </div>
-          <div class="card">
-            <h3>Penetration Testing</h3>
-            <p>Structured recon and vulnerability assessment with repeatable methods and clear reporting.</p>
-          </div>
-          <div class="card">
-            <h3>Secure Systems</h3>
-            <p>Designing systems with reliability, observability, and security built into the implementation.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section reveal">
-      <div class="container">
-        <h2 class="section-title">Featured projects</h2>
-        <div class="grid two reveal-stagger">
-          <div class="card">
-            <h3>Gmail Security Monitor &amp; Automated Threat Response</h3>
-            <p>A workflow for detecting suspicious email activity and triggering rapid triage actions.</p>
-            <div class="meta">Gmail API · JavaScript · Automation</div>
-          </div>
-          <div class="card">
-            <h3>Threat Detection Pipeline</h3>
-            <p>A scalable log-ingestion and analysis concept integrating ELK and messaging infrastructure.</p>
-            <div class="meta">ELK · Kafka · Security Infrastructure</div>
-          </div>
-        </div>
-        <div class="btn-row">
-          <a class="btn secondary" href="projects.html">View all projects</a>
-        </div>
-      </div>
-    </section>
-  </main>
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-row">
-        <p>© 2026 Omar Kaaki.</p>
-        <p>
-          <a href="projects.html">Projects</a> ·
-          <a href="skills.html">Skills</a> ·
-          <a href="contact.html">Contact</a>
-        </p>
-      </div>
-    </div>
-  </footer>
-  <script src="main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Omar Kaaki | Cybersecurity Portfolio</title>
+    <meta name="description" content="Modern cybersecurity portfolio for Omar Kaaki: SOC, DFIR, penetration testing, and secure systems engineering." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
