@@ -25,6 +25,10 @@ window.addEventListener('keydown',    onUserScroll, { passive: true, once: true 
 const pinUntil = performance.now() + 1500;
 function pinTop(t) {
   if (userScrolled || t > pinUntil) return;
+  // If Lenis is up, also tell it to snap to 0 so it doesn't animate back.
+  if (window.__lenis && window.__lenis.actualScroll !== 0) {
+    window.__lenis.scrollTo(0, { immediate: true, force: true });
+  }
   if (window.scrollY !== 0) {
     window.scrollTo(0, 0);
   }

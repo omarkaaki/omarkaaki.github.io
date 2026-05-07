@@ -378,7 +378,7 @@ export default function InteractiveTerminal() {
   );
 
   const focusInput = useCallback(() => {
-    if (inputRef.current) inputRef.current.focus();
+    if (inputRef.current) inputRef.current.focus({ preventScroll: true });
   }, []);
 
   return (
@@ -445,7 +445,6 @@ export default function InteractiveTerminal() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="type a command..."
-              autoFocus
               spellCheck={false}
               autoComplete="off"
               autoCapitalize="off"
