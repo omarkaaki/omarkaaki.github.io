@@ -32,10 +32,10 @@ export default function About() {
             </TiltCard>
             <div className="hero-widget-stage">
               <Suspense fallback={null}>
-                <HeroWidget variant="skull" />
+                <HeroWidget variant="biometric" />
               </Suspense>
               <div className="widget-overlay">
-                <span className="widget-label">/identity/profile · live</span>
+                <span className="widget-label">/biometric/scan · live</span>
               </div>
             </div>
           </div>

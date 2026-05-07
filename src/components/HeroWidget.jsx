@@ -1,287 +1,421 @@
 import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Icosahedron, Torus, MeshDistortMaterial } from '@react-three/drei';
+import { Float, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
- * Per-page 3D widgets, sized to sit in a subpage hero. Four variants:
- *   skull  → About    (low-poly distorting head with glowing amber eyes)
- *   vault  → Projects (cubes orbiting a wireframe core)
- *   orbit  → Skills   (concentric dotted rings around a central node)
- *   beacon → Contact  (transmission tower: expanding signal rings)
+ * Per-page 3D widgets — each one tied to a security/DFIR concept:
+ *   biometric → About    (rotating wireframe eye with iris ring + scanning beam)
+ *   shield    → Projects (hex perimeter shield with orbiting threats deflecting off)
+ *   radar     → Skills   (concentric rings + sweep line + blips appearing on detection)
+ *   cipher    → Contact  (matrix-style falling glyphs — encrypted data stream)
  *
- * No post-processing to keep cost low — Scene3D in the background already
- * supplies bloom, so widgets just need crisp emissive geometry.
+ * Lightweight: no post-processing (the home Scene3D supplies bloom across the
+ * whole page), and emissive colors via toneMapped={false} stay punchy.
  */
 
-function SkullScene() {
-  const wire = useRef();
-  const inner = useRef();
-  const eyeL = useRef();
-  const eyeR = useRef();
+/* ============================================================
+ * BIOMETRIC — wireframe eye + iris ring + scanning beam (About)
+ * ============================================================ */
+function BiometricScene() {
+  const eyeballRef = useRef();
+  const irisRef = useRef();
+  const pupilGlowRef = useRef();
+  const scanBeamRef = useRef();
 
   useFrame((state, dt) => {
-    if (wire.current) {
-      wire.current.rotation.x += dt * 0.18;
-      wire.current.rotation.y += dt * 0.24;
+    const t = state.clock.elapsedTime;
+    if (eyeballRef.current) {
+      // Eye "looks around" — slow drift in rotation
+      eyeballRef.current.rotation.y = Math.sin(t * 0.4) * 0.35;
+      eyeballRef.current.rotation.x = Math.cos(t * 0.3) * 0.2;
     }
-    if (inner.current) {
-      inner.current.rotation.x -= dt * 0.32;
-      inner.current.rotation.z += dt * 0.18;
+    if (irisRef.current) {
+      irisRef.current.rotation.z += dt * 0.6;
     }
-    const pulse = 0.78 + Math.sin(state.clock.elapsedTime * 3.2) * 0.22;
-    if (eyeL.current) eyeL.current.scale.setScalar(pulse);
-    if (eyeR.current) eyeR.current.scale.setScalar(pulse);
+    if (pupilGlowRef.current) {
+      const pulse = 0.7 + Math.sin(t * 3.2) * 0.3;
+      pupilGlowRef.current.scale.setScalar(pulse);
+    }
+    if (scanBeamRef.current) {
+      // Vertical scanning beam sweeps top-to-bottom on a 2.5s loop
+      const period = 2.5;
+      const phase = (t % period) / period;
+      scanBeamRef.current.position.y = 1.4 - phase * 2.8;
+      const mat = scanBeamRef.current.material;
+      if (mat) mat.opacity = Math.sin(phase * Math.PI) * 0.6;
+    }
   });
 
   return (
     <group>
-      <Icosahedron ref={wire} args={[1.45, 1]}>
-        <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.6} toneMapped={false} />
-      </Icosahedron>
-      <Icosahedron ref={inner} args={[0.92, 4]}>
-        <MeshDistortMaterial
-          color="#0a2018"
-          emissive="#00ff88"
-          emissiveIntensity={0.45}
-          distort={0.32}
-          speed={2.2}
-          metalness={0.65}
-          roughness={0.25}
-        />
-      </Icosahedron>
-      <mesh ref={eyeL} position={[-0.32, 0.18, 0.92]}>
-        <sphereGeometry args={[0.07, 14, 14]} />
-        <meshBasicMaterial color="#f4b400" toneMapped={false} />
-      </mesh>
-      <mesh ref={eyeR} position={[0.32, 0.18, 0.92]}>
-        <sphereGeometry args={[0.07, 14, 14]} />
-        <meshBasicMaterial color="#f4b400" toneMapped={false} />
-      </mesh>
-      {/* Subtle outer halo */}
-      <Icosahedron args={[1.55, 1]}>
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.05} side={THREE.BackSide} />
-      </Icosahedron>
-    </group>
-  );
-}
-
-function VaultScene() {
-  const group = useRef();
-  const inner = useRef();
-
-  useFrame((state, dt) => {
-    if (group.current) {
-      group.current.rotation.y += dt * 0.18;
-      group.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.18;
-    }
-    if (inner.current) {
-      inner.current.rotation.x += dt * 0.6;
-      inner.current.rotation.y += dt * 0.4;
-    }
-  });
-
-  const cubes = useMemo(() => {
-    return Array.from({ length: 6 }, (_, i) => {
-      const angle = (i / 6) * Math.PI * 2;
-      const r = 1.55;
-      return [Math.cos(angle) * r, Math.sin(angle * 0.5) * 0.45, Math.sin(angle) * r];
-    });
-  }, []);
-
-  return (
-    <group ref={group}>
-      {/* Central core */}
-      <mesh ref={inner}>
-        <octahedronGeometry args={[0.42, 0]} />
-        <meshStandardMaterial
-          color="#0a2018"
-          emissive="#00ff88"
-          emissiveIntensity={0.6}
-          metalness={0.85}
-          roughness={0.2}
-        />
-      </mesh>
-      <mesh>
-        <octahedronGeometry args={[0.55, 0]} />
-        <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.45} toneMapped={false} />
-      </mesh>
-      {/* Orbiting cubes */}
-      {cubes.map((pos, i) => (
-        <Float
-          key={i}
-          speed={1.6}
-          rotationIntensity={1.4}
-          floatIntensity={0.55}
-          position={pos}
-        >
+      <group ref={eyeballRef}>
+        {/* Outer wireframe eyeball */}
+        <mesh>
+          <sphereGeometry args={[1.25, 28, 28]} />
+          <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.32} toneMapped={false} />
+        </mesh>
+        {/* Front iris plate (faces camera) */}
+        <group ref={irisRef} position={[0, 0, 0.92]}>
           <mesh>
-            <boxGeometry args={[0.28, 0.28, 0.28]} />
-            <meshStandardMaterial
-              color="#0c1410"
-              emissive="#00ff88"
-              emissiveIntensity={0.22}
-              metalness={0.9}
-              roughness={0.18}
-            />
+            <torusGeometry args={[0.55, 0.04, 8, 48]} />
+            <meshBasicMaterial color="#00ff88" toneMapped={false} />
           </mesh>
           <mesh>
-            <boxGeometry args={[0.31, 0.31, 0.31]} />
-            <meshBasicMaterial color={i % 3 === 0 ? '#f4b400' : '#00ff88'} wireframe transparent opacity={0.55} toneMapped={false} />
+            <torusGeometry args={[0.4, 0.018, 8, 48]} />
+            <meshBasicMaterial color="#00ff88" transparent opacity={0.7} toneMapped={false} />
           </mesh>
-        </Float>
-      ))}
-    </group>
-  );
-}
-
-function OrbitScene() {
-  const group = useRef();
-  const ringRefs = useRef([]);
-
-  useFrame((state, dt) => {
-    if (group.current) {
-      group.current.rotation.x = -0.32 + Math.sin(state.clock.elapsedTime * 0.18) * 0.06;
-    }
-    ringRefs.current.forEach((ring, i) => {
-      if (ring) {
-        ring.rotation.z += dt * (i % 2 === 0 ? 0.32 : -0.4) * (1 - i * 0.12);
-      }
-    });
-  });
-
-  const ringConfigs = [
-    { radius: 0.72, count: 8, color: '#00ff88' },
-    { radius: 1.22, count: 12, color: '#00ff88' },
-    { radius: 1.74, count: 18, color: '#f4b400' },
-    { radius: 2.28, count: 24, color: '#66d0a0' },
-  ];
-
-  return (
-    <group ref={group} rotation={[-0.32, 0, 0]}>
-      {/* Center node */}
-      <mesh>
-        <sphereGeometry args={[0.13, 16, 16]} />
-        <meshBasicMaterial color="#00ff88" toneMapped={false} />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[0.22, 16, 16]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.18} toneMapped={false} />
-      </mesh>
-      {ringConfigs.map((cfg, ri) => (
-        <group key={ri} ref={(r) => (ringRefs.current[ri] = r)}>
-          <Torus args={[cfg.radius, 0.005, 8, 64]}>
-            <meshBasicMaterial color={cfg.color} transparent opacity={0.32} toneMapped={false} />
-          </Torus>
-          {Array.from({ length: cfg.count }).map((_, i) => {
-            const angle = (i / cfg.count) * Math.PI * 2;
+          {/* Iris radial spokes */}
+          {Array.from({ length: 16 }).map((_, i) => {
+            const angle = (i / 16) * Math.PI * 2;
+            const x = Math.cos(angle) * 0.46;
+            const y = Math.sin(angle) * 0.46;
             return (
-              <mesh
-                key={i}
-                position={[Math.cos(angle) * cfg.radius, Math.sin(angle) * cfg.radius, 0]}
-              >
-                <sphereGeometry args={[0.04, 8, 8]} />
-                <meshBasicMaterial color={cfg.color} toneMapped={false} />
+              <mesh key={i} position={[x, y, 0]} rotation={[0, 0, angle]}>
+                <boxGeometry args={[0.18, 0.014, 0.014]} />
+                <meshBasicMaterial color="#00ff88" toneMapped={false} />
               </mesh>
             );
           })}
         </group>
-      ))}
+        {/* Pupil */}
+        <mesh position={[0, 0, 0.98]}>
+          <sphereGeometry args={[0.16, 18, 18]} />
+          <meshBasicMaterial color="#000000" />
+        </mesh>
+        {/* Pupil glow halo */}
+        <mesh ref={pupilGlowRef} position={[0, 0, 1.0]}>
+          <sphereGeometry args={[0.22, 18, 18]} />
+          <meshBasicMaterial color="#f4b400" transparent opacity={0.45} toneMapped={false} />
+        </mesh>
+      </group>
+
+      {/* Scan beam (horizontal plane that sweeps vertically) */}
+      <mesh ref={scanBeamRef} position={[0, 0, 0.5]}>
+        <planeGeometry args={[3.4, 0.06]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.5} side={THREE.DoubleSide} toneMapped={false} />
+      </mesh>
+
+      {/* Subtle halo */}
+      <mesh>
+        <sphereGeometry args={[1.4, 16, 16]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.04} side={THREE.BackSide} toneMapped={false} />
+      </mesh>
     </group>
   );
 }
 
-function BeaconScene() {
-  const NUM_RINGS = 5;
-  const ringRefs = useRef([]);
-  const phases = useMemo(
-    () => Array.from({ length: NUM_RINGS }, (_, i) => i * (2.0 / NUM_RINGS)),
-    []
-  );
-  const satellites = useMemo(
-    () =>
-      Array.from({ length: 3 }, (_, i) => {
-        const angle = (i / 3) * Math.PI * 2;
-        return [Math.cos(angle) * 1.7, 0, Math.sin(angle) * 1.7];
-      }),
-    []
-  );
-  const satRefs = useRef([]);
+/* ============================================================
+ * SHIELD — hex perimeter + orbiting threats getting deflected (Projects)
+ * ============================================================ */
+function ShieldScene() {
+  const shieldRef = useRef();
+  const emblemRef = useRef();
+  const ringRef = useRef();
+  const NUM_THREATS = 6;
+  const threatRefs = useRef([]);
 
-  useFrame((state) => {
+  useFrame((state, dt) => {
     const t = state.clock.elapsedTime;
-    const period = 2.4;
-    ringRefs.current.forEach((ring, i) => {
-      if (!ring) return;
-      const localT = ((t + phases[i]) % period) / period;
-      const radius = 0.35 + localT * 1.85;
-      const op = (1 - localT) * 0.7;
-      ring.scale.setScalar(radius);
-      if (ring.material) ring.material.opacity = op;
-    });
-    satRefs.current.forEach((s, i) => {
-      if (!s) return;
-      const pulse = 0.7 + Math.sin(t * 2 + i * 1.2) * 0.3;
-      s.scale.setScalar(pulse);
+    if (shieldRef.current) {
+      shieldRef.current.rotation.y += dt * 0.18;
+      shieldRef.current.rotation.x = Math.sin(t * 0.3) * 0.12;
+    }
+    if (emblemRef.current) {
+      emblemRef.current.rotation.x += dt * 0.5;
+      emblemRef.current.rotation.z += dt * 0.3;
+    }
+    if (ringRef.current) {
+      // Pulse the perimeter ring
+      const s = 1 + Math.sin(t * 1.4) * 0.04;
+      ringRef.current.scale.setScalar(s);
+      const mat = ringRef.current.material;
+      if (mat) mat.opacity = 0.35 + Math.sin(t * 1.4) * 0.15;
+    }
+    // Threats orbit and "bounce" off the shield (radius oscillates between 1.4 outer and 1.15 deflection)
+    threatRefs.current.forEach((th, i) => {
+      if (!th) return;
+      const phase = (i / NUM_THREATS) * Math.PI * 2;
+      const angle = t * 0.5 + phase;
+      // Radial bounce — threats approach 1.15 (shield surface) then bounce back to 2.0
+      const radial = 1.4 + Math.sin(t * 1.6 + phase) * 0.55;
+      th.position.set(
+        Math.cos(angle) * radial,
+        Math.sin(angle * 1.3 + phase) * 0.35,
+        Math.sin(angle) * radial
+      );
+      const mat = th.material;
+      // When close to shield, flash brighter
+      const closeness = Math.max(0, 1 - (radial - 1.15) / 0.85);
+      if (mat) {
+        mat.color.setRGB(
+          1,
+          0.25 + closeness * 0.5,
+          0.25 + closeness * 0.2
+        );
+      }
+      const pulse = 0.7 + Math.sin(t * 4 + phase) * 0.3;
+      th.scale.setScalar(pulse);
     });
   });
 
   return (
-    <group rotation={[-0.42, 0, 0]}>
-      {/* Central beacon */}
-      <mesh>
-        <sphereGeometry args={[0.2, 18, 18]} />
-        <meshBasicMaterial color="#00ff88" toneMapped={false} />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[0.34, 18, 18]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.16} toneMapped={false} />
-      </mesh>
-      {/* Vertical antenna line */}
-      <mesh position={[0, 0.6, 0]}>
-        <cylinderGeometry args={[0.018, 0.018, 1.2, 8]} />
-        <meshBasicMaterial color="#00ff88" toneMapped={false} />
-      </mesh>
-      <mesh position={[0, 1.25, 0]}>
-        <sphereGeometry args={[0.06, 12, 12]} />
-        <meshBasicMaterial color="#f4b400" toneMapped={false} />
-      </mesh>
-      {/* Expanding rings */}
-      {phases.map((_, i) => (
-        <mesh
-          key={i}
-          ref={(r) => (ringRefs.current[i] = r)}
-          rotation={[Math.PI / 2, 0, 0]}
-        >
-          <torusGeometry args={[1, 0.012, 6, 64]} />
-          <meshBasicMaterial
-            color={i % 2 === 0 ? '#00ff88' : '#f4b400'}
-            transparent
-            opacity={0.5}
-            toneMapped={false}
+    <group>
+      {/* Hex shield body */}
+      <group ref={shieldRef}>
+        {/* Solid hex face */}
+        <mesh>
+          <cylinderGeometry args={[1.05, 1.05, 0.16, 6, 1, false]} />
+          <meshStandardMaterial
+            color="#0a2018"
+            emissive="#00ff88"
+            emissiveIntensity={0.42}
+            metalness={0.85}
+            roughness={0.22}
           />
         </mesh>
-      ))}
-      {/* Satellite nodes */}
-      {satellites.map((pos, i) => (
-        <mesh key={i} ref={(r) => (satRefs.current[i] = r)} position={pos}>
-          <sphereGeometry args={[0.06, 10, 10]} />
-          <meshBasicMaterial color="#f4b400" toneMapped={false} />
+        {/* Hex outline (slightly larger, wireframe) */}
+        <mesh ref={ringRef}>
+          <cylinderGeometry args={[1.12, 1.12, 0.18, 6, 1, false]} />
+          <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.5} toneMapped={false} />
+        </mesh>
+        {/* Emblem at center */}
+        <mesh ref={emblemRef}>
+          <octahedronGeometry args={[0.42, 0]} />
+          <meshStandardMaterial
+            color="#0c1410"
+            emissive="#f4b400"
+            emissiveIntensity={0.55}
+            metalness={0.9}
+            roughness={0.2}
+          />
+        </mesh>
+      </group>
+
+      {/* Orbiting threats */}
+      {Array.from({ length: NUM_THREATS }).map((_, i) => (
+        <mesh key={i} ref={(r) => (threatRefs.current[i] = r)}>
+          <sphereGeometry args={[0.07, 10, 10]} />
+          <meshBasicMaterial color="#ff4747" toneMapped={false} />
         </mesh>
       ))}
     </group>
   );
 }
 
+/* ============================================================
+ * RADAR — angled radar dish with sweep line and blips (Skills)
+ * ============================================================ */
+function RadarScene() {
+  const sweepRef = useRef();
+  const NUM_BLIPS = 8;
+  const blipsRef = useRef([]);
+  const blipState = useRef(
+    Array.from({ length: NUM_BLIPS }, () => ({
+      angle: Math.random() * Math.PI * 2,
+      r: 0.5 + Math.random() * 1.6,
+      life: 0.5 + Math.random() * 2.5,
+    }))
+  );
+
+  useFrame((state, dt) => {
+    if (sweepRef.current) {
+      sweepRef.current.rotation.z -= dt * 0.85;
+    }
+    blipState.current.forEach((b, i) => {
+      b.life -= dt;
+      const blip = blipsRef.current[i];
+      if (!blip) return;
+      if (b.life <= 0) {
+        b.angle = Math.random() * Math.PI * 2;
+        b.r = 0.5 + Math.random() * 1.6;
+        b.life = 1.5 + Math.random() * 2.5;
+        blip.position.set(Math.cos(b.angle) * b.r, 0, Math.sin(b.angle) * b.r);
+      }
+      const op = Math.max(0, Math.min(1, b.life / 2));
+      const mat = blip.material;
+      if (mat) mat.opacity = op;
+      // Pulse scale
+      const pulse = 0.6 + Math.sin(state.clock.elapsedTime * 4 + i) * 0.4;
+      blip.scale.setScalar(pulse);
+    });
+  });
+
+  return (
+    <group rotation={[-Math.PI / 2.5, 0, 0]}>
+      {/* Concentric rings */}
+      {[0.6, 1.1, 1.6, 2.1].map((r, i) => (
+        <mesh key={i} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[r, 0.006, 6, 80]} />
+          <meshBasicMaterial color="#00ff88" transparent opacity={0.42 - i * 0.07} toneMapped={false} />
+        </mesh>
+      ))}
+      {/* Cross-hairs */}
+      <mesh>
+        <boxGeometry args={[4.4, 0.012, 0.012]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.22} toneMapped={false} />
+      </mesh>
+      <mesh>
+        <boxGeometry args={[0.012, 0.012, 4.4]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.22} toneMapped={false} />
+      </mesh>
+      {/* Diagonal grid lines */}
+      <mesh rotation={[0, Math.PI / 4, 0]}>
+        <boxGeometry args={[4.4, 0.008, 0.008]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.14} toneMapped={false} />
+      </mesh>
+      <mesh rotation={[0, -Math.PI / 4, 0]}>
+        <boxGeometry args={[4.4, 0.008, 0.008]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.14} toneMapped={false} />
+      </mesh>
+
+      {/* Sweep line + cone */}
+      <group ref={sweepRef} rotation={[Math.PI / 2, 0, 0]}>
+        <mesh position={[1.05, 0, 0]}>
+          <boxGeometry args={[2.1, 0.014, 0.014]} />
+          <meshBasicMaterial color="#00ff88" toneMapped={false} />
+        </mesh>
+        {/* Trailing fan */}
+        <mesh position={[0.6, 0, -0.4]} rotation={[0, 0, -Math.PI / 8]}>
+          <planeGeometry args={[1.6, 1.0]} />
+          <meshBasicMaterial color="#00ff88" transparent opacity={0.13} side={THREE.DoubleSide} toneMapped={false} />
+        </mesh>
+      </group>
+
+      {/* Blips */}
+      {Array.from({ length: NUM_BLIPS }).map((_, i) => {
+        const initial = blipState.current[i];
+        return (
+          <mesh
+            key={i}
+            ref={(r) => (blipsRef.current[i] = r)}
+            position={[Math.cos(initial.angle) * initial.r, 0, Math.sin(initial.angle) * initial.r]}
+          >
+            <sphereGeometry args={[0.07, 12, 12]} />
+            <meshBasicMaterial color="#f4b400" transparent toneMapped={false} />
+          </mesh>
+        );
+      })}
+
+      {/* Center node */}
+      <mesh>
+        <sphereGeometry args={[0.1, 14, 14]} />
+        <meshBasicMaterial color="#00ff88" toneMapped={false} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[0.18, 14, 14]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.22} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ============================================================
+ * CIPHER — matrix-style falling glyphs in 3D (Contact)
+ * ============================================================ */
+const GLYPHS = '01<>!@#$%&*ΞΨΔΦΩabcdefABCDEF';
+
+function CipherColumn({ x, speed, length, glyphSeed }) {
+  const groupRef = useRef();
+  const [glyphList] = React.useState(() =>
+    Array.from({ length }, (_, i) => GLYPHS[(glyphSeed + i * 3) % GLYPHS.length])
+  );
+  const swapTimer = useRef(0);
+  const [swapTick, setSwapTick] = React.useState(0);
+
+  useFrame((state, dt) => {
+    if (groupRef.current) {
+      groupRef.current.position.y -= dt * speed;
+      // Loop top
+      if (groupRef.current.position.y < -2.5 - length * 0.45) {
+        groupRef.current.position.y = 2.6;
+      }
+    }
+    swapTimer.current += dt;
+    if (swapTimer.current > 0.18) {
+      swapTimer.current = 0;
+      setSwapTick((v) => (v + 1) % 1024);
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[x, 2.6, 0]}>
+      {glyphList.map((_, i) => {
+        const isHead = i === 0;
+        const opacity = isHead ? 1 : Math.max(0.08, 1 - i * 0.13);
+        const ch = GLYPHS[(swapTick + i * 5 + glyphSeed) % GLYPHS.length];
+        return (
+          <Text
+            key={i}
+            position={[0, -i * 0.45, 0]}
+            fontSize={0.34}
+            color={isHead ? '#ffffff' : '#00ff88'}
+            anchorX="center"
+            anchorY="middle"
+            fillOpacity={opacity}
+            material-toneMapped={false}
+          >
+            {ch}
+          </Text>
+        );
+      })}
+    </group>
+  );
+}
+
+function CipherScene() {
+  const COLUMNS = 5;
+  const cols = useMemo(
+    () =>
+      Array.from({ length: COLUMNS }, (_, i) => ({
+        x: (i - (COLUMNS - 1) / 2) * 0.7,
+        speed: 0.8 + Math.random() * 0.7,
+        length: 6 + Math.floor(Math.random() * 3),
+        glyphSeed: Math.floor(Math.random() * GLYPHS.length),
+      })),
+    []
+  );
+
+  return (
+    <group rotation={[0, -0.15, 0]}>
+      {cols.map((c, i) => (
+        <CipherColumn key={i} {...c} />
+      ))}
+      {/* Side accent: a vertical "secure channel" indicator */}
+      <mesh position={[-2.0, 0, 0]}>
+        <boxGeometry args={[0.02, 4, 0.02]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.4} toneMapped={false} />
+      </mesh>
+      <mesh position={[2.0, 0, 0]}>
+        <boxGeometry args={[0.02, 4, 0.02]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.4} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ============================================================
+ * Variant registry + default Canvas wrapper
+ * ============================================================ */
 const VARIANTS = {
-  skull: SkullScene,
-  vault: VaultScene,
-  orbit: OrbitScene,
-  beacon: BeaconScene,
+  biometric: BiometricScene,
+  shield: ShieldScene,
+  radar: RadarScene,
+  cipher: CipherScene,
 };
 
-export default function HeroWidget({ variant = 'skull' }) {
-  const Scene = VARIANTS[variant] || VARIANTS.skull;
+const VARIANT_FLOAT = {
+  biometric: { speed: 0.5, rot: 0.25, float: 0.3 },
+  shield:    { speed: 0.6, rot: 0.3,  float: 0.35 },
+  radar:     { speed: 0.0, rot: 0.0,  float: 0.0 }, // Radar should stay flat
+  cipher:    { speed: 0.0, rot: 0.0,  float: 0.0 }, // Code rain stays vertical
+};
+
+export default function HeroWidget({ variant = 'biometric' }) {
+  const Scene = VARIANTS[variant] || VARIANTS.biometric;
+  const floatCfg = VARIANT_FLOAT[variant] || VARIANT_FLOAT.biometric;
+  const useFloat = floatCfg.speed > 0;
+
   return (
     <div className="hero-widget" aria-hidden="true">
       <Canvas
@@ -293,9 +427,13 @@ export default function HeroWidget({ variant = 'skull' }) {
           <ambientLight intensity={0.35} />
           <pointLight position={[3, 3, 3]} intensity={1.1} color="#00ff88" />
           <pointLight position={[-2, -1, -1]} intensity={0.6} color="#f4b400" />
-          <Float speed={0.55} rotationIntensity={0.3} floatIntensity={0.4}>
+          {useFloat ? (
+            <Float speed={floatCfg.speed} rotationIntensity={floatCfg.rot} floatIntensity={floatCfg.float}>
+              <Scene />
+            </Float>
+          ) : (
             <Scene />
-          </Float>
+          )}
         </Suspense>
       </Canvas>
     </div>

@@ -22,10 +22,6 @@ export default function SmoothScroll({ children }) {
     lenisRef.current = lenis;
     window.__lenis = lenis;
 
-    // Force to top once Lenis owns scrolling so a cached browser scroll
-    // position doesn't leave us mid-page on first paint.
-    lenis.scrollTo(0, { immediate: true, force: true });
-
     let rafId = 0;
     const raf = (time) => {
       lenis.raf(time);
@@ -33,8 +29,18 @@ export default function SmoothScroll({ children }) {
     };
     rafId = requestAnimationFrame(raf);
 
+    // Defer scroll-to-top to next frame so the rAF loop is running when
+    // Lenis applies it. Then re-fire once more after a short delay in case
+    // any layout shift (font loads, lazy modules) nudges the page.
+    const settle = () => lenis.scrollTo(0, { immediate: true, force: true });
+    requestAnimationFrame(settle);
+    const t1 = setTimeout(settle, 80);
+    const t2 = setTimeout(settle, 250);
+
     return () => {
       cancelAnimationFrame(rafId);
+      clearTimeout(t1);
+      clearTimeout(t2);
       lenis.destroy();
       if (window.__lenis === lenis) delete window.__lenis;
     };

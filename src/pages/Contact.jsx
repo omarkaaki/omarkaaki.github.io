@@ -31,10 +31,10 @@ export default function Contact() {
             </TiltCard>
             <div className="hero-widget-stage">
               <Suspense fallback={null}>
-                <HeroWidget variant="beacon" />
+                <HeroWidget variant="cipher" />
               </Suspense>
               <div className="widget-overlay">
-                <span className="widget-label">/comm/secure · transmitting</span>
+                <span className="widget-label">/channel/encrypted · streaming</span>
               </div>
             </div>
           </div>

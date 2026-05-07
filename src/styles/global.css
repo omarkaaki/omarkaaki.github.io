@@ -401,23 +401,25 @@ main {
 .reveal-stagger > *:nth-child(5) { transition-delay: 0.32s; }
 .reveal-stagger > *:nth-child(6) { transition-delay: 0.4s; }
 
-/* ===== HERO CINEMA (full-bleed scroll-driven) ===== */
+/* ===== HERO CINEMA (full-bleed scroll-driven) =====
+   Content anchors to the top so the visible page actually starts where the
+   user expects. No align-center on the flex/grid; padding-top alone reserves
+   space under the floating navbar + status bar. */
 .hero-cinema {
   min-height: 100vh;
   position: relative;
   display: flex;
-  align-items: center;
-  padding: 0 0 8vh;
-  margin-top: -82px; /* Pull up under floating nav */
+  align-items: flex-start;
+  padding: 0 0 6vh;
 }
 
 .hero-cinema-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.4rem;
-  align-content: center;
-  padding: 22vh 0 0;
+  gap: 1.6rem;
+  padding: clamp(120px, 18vh, 200px) 0 0;
   position: relative;
+  width: 100%;
 }
 
 .hero-kicker {

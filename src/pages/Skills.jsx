@@ -78,10 +78,10 @@ export default function Skills() {
             </TiltCard>
             <div className="hero-widget-stage">
               <Suspense fallback={null}>
-                <HeroWidget variant="orbit" />
+                <HeroWidget variant="radar" />
               </Suspense>
               <div className="widget-overlay">
-                <span className="widget-label">/skills/orbit · synced</span>
+                <span className="widget-label">/radar/sweep · scanning</span>
               </div>
             </div>
           </div>

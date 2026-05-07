@@ -111,10 +111,10 @@ export default function Projects() {
             </TiltCard>
             <div className="hero-widget-stage">
               <Suspense fallback={null}>
-                <HeroWidget variant="vault" />
+                <HeroWidget variant="shield" />
               </Suspense>
               <div className="widget-overlay">
-                <span className="widget-label">/vault/index · 8 records</span>
+                <span className="widget-label">/perimeter/active · armed</span>
               </div>
             </div>
           </div>
