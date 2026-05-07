@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import {
@@ -8,6 +8,8 @@ import {
   CpuIcon,
   FingerprintIcon,
 } from '../components/Icons';
+
+const HeroWidget = lazy(() => import('../components/HeroWidget'));
 
 const skillCategories = [
   {
@@ -61,18 +63,28 @@ export default function Skills() {
     <>
       <section className="hero">
         <div className="container">
-          <TiltCard className="highlight" intensity={4}>
-            <div className="kicker">
-              <FingerprintIcon />
-              Skills
+          <div className="hero-grid hero-grid-widget">
+            <TiltCard className="highlight" intensity={4}>
+              <div className="kicker">
+                <FingerprintIcon />
+                Skills
+              </div>
+              <h1>
+                <span className="glitch" data-text="Skills">Skills</span>
+              </h1>
+              <p className="lead">
+                Cybersecurity, forensics, and engineering — everything I can confidently put my hands on.
+              </p>
+            </TiltCard>
+            <div className="hero-widget-stage">
+              <Suspense fallback={null}>
+                <HeroWidget variant="orbit" />
+              </Suspense>
+              <div className="widget-overlay">
+                <span className="widget-label">/skills/orbit · synced</span>
+              </div>
             </div>
-            <h1>
-              <span className="glitch" data-text="Skills">Skills</span>
-            </h1>
-            <p className="lead">
-              Cybersecurity, forensics, and engineering — everything I can confidently put my hands on.
-            </p>
-          </TiltCard>
+          </div>
         </div>
       </section>
 

@@ -53,7 +53,7 @@ export default function ParticleCanvas() {
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < CONNECTION_DIST) {
             const alpha = (1 - dist / CONNECTION_DIST) * 0.1;
-            ctx.strokeStyle = `rgba(214, 44, 26, ${alpha})`;
+            ctx.strokeStyle = `rgba(0, 255, 136, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
@@ -64,7 +64,7 @@ export default function ParticleCanvas() {
       }
 
       for (const p of particles) {
-        const color = p.hue === 'amber' ? '244, 180, 0' : '214, 44, 26';
+        const color = p.hue === 'amber' ? '244, 180, 0' : '0, 255, 136';
         ctx.fillStyle = `rgba(${color}, ${p.opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);

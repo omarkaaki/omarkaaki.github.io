@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import {
@@ -9,24 +9,36 @@ import {
   EyeIcon,
 } from '../components/Icons';
 
+const HeroWidget = lazy(() => import('../components/HeroWidget'));
+
 export default function About() {
   return (
     <>
       <section className="hero">
         <div className="container">
-          <TiltCard className="highlight" intensity={4}>
-            <div className="kicker">
-              <FingerprintIcon />
-              About
+          <div className="hero-grid hero-grid-widget">
+            <TiltCard className="highlight" intensity={4}>
+              <div className="kicker">
+                <FingerprintIcon />
+                About
+              </div>
+              <h1>
+                <span className="glitch" data-text="About me">About me</span>
+              </h1>
+              <p className="lead">
+                I am a senior Computer &amp; Communications Engineering student at the American University of Beirut,
+                focused on cybersecurity operations, incident response, and forensic-grade systems design.
+              </p>
+            </TiltCard>
+            <div className="hero-widget-stage">
+              <Suspense fallback={null}>
+                <HeroWidget variant="skull" />
+              </Suspense>
+              <div className="widget-overlay">
+                <span className="widget-label">/identity/profile · live</span>
+              </div>
             </div>
-            <h1>
-              <span className="glitch" data-text="About me">About me</span>
-            </h1>
-            <p className="lead">
-              I am a senior Computer &amp; Communications Engineering student at the American University of Beirut,
-              focused on cybersecurity operations, incident response, and forensic-grade systems design.
-            </p>
-          </TiltCard>
+          </div>
         </div>
       </section>
 

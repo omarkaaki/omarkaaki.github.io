@@ -81,7 +81,7 @@ function Edges({ nodes, edges }) {
         />
       </bufferGeometry>
       <lineBasicMaterial
-        color="#d62c1a"
+        color="#00ff88"
         transparent
         opacity={0.22}
         toneMapped={false}
@@ -98,8 +98,8 @@ function Nodes({ nodes }) {
   const colors = useMemo(() => {
     // Mr. Robot palette: dominant red, amber accent, occasional gray.
     const palette = [
-      new THREE.Color('#d62c1a'), // signal red
-      new THREE.Color('#d62c1a'),
+      new THREE.Color('#00ff88'), // signal red
+      new THREE.Color('#00ff88'),
       new THREE.Color('#f4b400'), // CRT amber
       new THREE.Color('#888888'), // muted gray
     ];
@@ -249,7 +249,7 @@ function Lights() {
   return (
     <>
       <ambientLight intensity={0.25} />
-      <pointLight position={[3, 3, 3]} intensity={1.3} color="#d62c1a" />
+      <pointLight position={[3, 3, 3]} intensity={1.3} color="#00ff88" />
       <pointLight position={[-3, -2, -2]} intensity={0.7} color="#f4b400" />
       <pointLight position={[0, -3, 2]} intensity={0.4} color="#ffffff" />
     </>

@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
+
+const HeroWidget = lazy(() => import('../components/HeroWidget'));
 import {
   ShieldIcon,
   SearchIcon,
@@ -93,19 +95,29 @@ export default function Projects() {
     <>
       <section className="hero">
         <div className="container">
-          <TiltCard className="highlight" intensity={4}>
-            <div className="kicker">
-              <FingerprintIcon />
-              Projects
+          <div className="hero-grid hero-grid-widget">
+            <TiltCard className="highlight" intensity={4}>
+              <div className="kicker">
+                <FingerprintIcon />
+                Projects
+              </div>
+              <h1>
+                <span className="glitch" data-text="Projects">Projects</span>
+              </h1>
+              <p className="lead">
+                Cybersecurity projects I can confidently explain end-to-end: architecture decisions,
+                tooling choices, implementation details, and measured outcomes.
+              </p>
+            </TiltCard>
+            <div className="hero-widget-stage">
+              <Suspense fallback={null}>
+                <HeroWidget variant="vault" />
+              </Suspense>
+              <div className="widget-overlay">
+                <span className="widget-label">/vault/index · 8 records</span>
+              </div>
             </div>
-            <h1>
-              <span className="glitch" data-text="Projects">Projects</span>
-            </h1>
-            <p className="lead">
-              Cybersecurity projects I can confidently explain end-to-end: architecture decisions,
-              tooling choices, implementation details, and measured outcomes.
-            </p>
-          </TiltCard>
+          </div>
         </div>
       </section>
 

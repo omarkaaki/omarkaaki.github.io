@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
 import {
@@ -8,24 +8,36 @@ import {
   FingerprintIcon,
 } from '../components/Icons';
 
+const HeroWidget = lazy(() => import('../components/HeroWidget'));
+
 export default function Contact() {
   return (
     <>
       <section className="hero">
         <div className="container">
-          <TiltCard className="highlight" intensity={4}>
-            <div className="kicker">
-              <FingerprintIcon />
-              Contact
+          <div className="hero-grid hero-grid-widget">
+            <TiltCard className="highlight" intensity={4}>
+              <div className="kicker">
+                <FingerprintIcon />
+                Contact
+              </div>
+              <h1>
+                <span className="glitch" data-text="Contact">Contact</span>
+              </h1>
+              <p className="lead">
+                Open to entry-level cybersecurity roles, internships, security engineering opportunities,
+                and research collaborations.
+              </p>
+            </TiltCard>
+            <div className="hero-widget-stage">
+              <Suspense fallback={null}>
+                <HeroWidget variant="beacon" />
+              </Suspense>
+              <div className="widget-overlay">
+                <span className="widget-label">/comm/secure · transmitting</span>
+              </div>
             </div>
-            <h1>
-              <span className="glitch" data-text="Contact">Contact</span>
-            </h1>
-            <p className="lead">
-              Open to entry-level cybersecurity roles, internships, security engineering opportunities,
-              and research collaborations.
-            </p>
-          </TiltCard>
+          </div>
         </div>
       </section>
 
