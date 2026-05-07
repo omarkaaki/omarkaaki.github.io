@@ -1,5 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 
+/**
+ * Lightweight ambient particle layer. The 3D scene is the showpiece;
+ * this just adds atmospheric depth across all pages.
+ */
 export default function ParticleCanvas() {
   const canvasRef = useRef(null);
 
@@ -9,8 +13,15 @@ export default function ParticleCanvas() {
     const ctx = canvas.getContext('2d');
     let animId;
     let particles = [];
-    const PARTICLE_COUNT = 80;
-    const CONNECTION_DIST = 120;
+    let visible = true;
+
+    const PARTICLE_COUNT = 50;
+    const CONNECTION_DIST = 140;
+
+    const handleVisibility = () => {
+      visible = !document.hidden;
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -23,10 +34,11 @@ export default function ParticleCanvas() {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          size: Math.random() * 1.5 + 0.5,
-          opacity: Math.random() * 0.4 + 0.1,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          size: Math.random() * 1.2 + 0.4,
+          opacity: Math.random() * 0.35 + 0.08,
+          hue: Math.random() > 0.7 ? 'purple' : 'cyan',
         });
       }
     }
@@ -34,14 +46,13 @@ export default function ParticleCanvas() {
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw connections
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < CONNECTION_DIST) {
-            const alpha = (1 - dist / CONNECTION_DIST) * 0.15;
+            const alpha = (1 - dist / CONNECTION_DIST) * 0.1;
             ctx.strokeStyle = `rgba(0, 255, 200, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
@@ -52,15 +63,14 @@ export default function ParticleCanvas() {
         }
       }
 
-      // Draw particles
       for (const p of particles) {
-        ctx.fillStyle = `rgba(0, 255, 200, ${p.opacity})`;
+        const color = p.hue === 'purple' ? '168, 85, 247' : '0, 255, 200';
+        ctx.fillStyle = `rgba(${color}, ${p.opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Glow effect
-        ctx.fillStyle = `rgba(0, 255, 200, ${p.opacity * 0.3})`;
+        ctx.fillStyle = `rgba(${color}, ${p.opacity * 0.25})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
         ctx.fill();
@@ -77,8 +87,10 @@ export default function ParticleCanvas() {
     }
 
     function loop() {
-      update();
-      draw();
+      if (visible) {
+        update();
+        draw();
+      }
       animId = requestAnimationFrame(loop);
     }
 
@@ -86,14 +98,16 @@ export default function ParticleCanvas() {
     createParticles();
     loop();
 
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
       resize();
       createParticles();
-    });
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, []);
 

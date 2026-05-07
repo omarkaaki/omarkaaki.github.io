@@ -7,5 +7,16 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+          r3f: ['@react-three/fiber', '@react-three/drei'],
+          motion: ['framer-motion'],
+          react: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
   },
 });

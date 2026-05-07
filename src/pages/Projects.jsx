@@ -1,6 +1,6 @@
 import React from 'react';
 import ScrollReveal from '../components/ScrollReveal';
-import CardGlow from '../components/CardGlow';
+import TiltCard from '../components/TiltCard';
 import {
   ShieldIcon,
   SearchIcon,
@@ -15,58 +15,76 @@ import {
 
 const projects = [
   {
-    title: 'Gmail Security Monitor & Automated Threat Response',
-    desc: 'Automated monitoring pipeline for suspicious email activity using rule-based checks and AI-assisted triage. Built for fast alerting and quarantine-style response workflows.',
-    tags: ['Gmail API', 'JavaScript', 'Automation'],
+    title: 'Elegchos — Blockchain Chain of Custody',
+    desc: 'Final year capstone. A permissioned blockchain system for digital chain of custody in forensic investigations, pairing a hot Hyperledger Fabric ledger for active custody tracking with a cold archival ledger backed by IPFS for long-term tamper-evident storage. Sits behind a hardened jump-server gateway with mutual TLS, MFA, and RBAC. Achieved 20+ TPS write throughput with zero failures.',
+    tags: ['Hyperledger Fabric', 'IPFS', 'mTLS', 'MFA', 'RBAC', 'Jump Server'],
+    status: 'Capstone',
+    statusClass: 'featured',
+    icon: ShieldIcon,
+    iconClass: 'purple',
+  },
+  {
+    title: 'Wazuh SIEM Lab — Custom Detection Engineering',
+    desc: 'End-to-end SIEM deployment across a Wazuh Manager, Windows Server, Ubuntu, and Kali agent. Configured custom detection rules (IDs 100001–100008), Sysmon with the SwiftOnSecurity config, IIS web and FTP logging, and full Event ID coverage including 4625, 4624, 4720, 4732/4733, 4726, 7045, and Sysmon EID 1/11.',
+    tags: ['Wazuh', 'Sysmon', 'Detection Rules', 'Windows Server', 'Kali', 'Ubuntu'],
     status: 'Completed',
     statusClass: '',
-    icon: ShieldIcon,
+    icon: ActivityIcon,
     iconClass: '',
   },
   {
+    title: 'DFIR Triage — Multi-Workstation Malware Investigation',
+    desc: 'Forensic investigation of a malware campaign across nine Windows workstations. Identified patient zero (IT-01, user Lewis.Douglas), traced MSXSL.EXE execution and startup persistence, and produced a full report mapped to MITRE ATT&CK. Used Eric Zimmerman tools (KAPE, MFTECmd, PECmd, Registry Explorer, ShellBags Explorer, Timeline Explorer) for deep-dive Windows forensics.',
+    tags: ['DFIR', 'KAPE', 'Eric Zimmerman Tools', 'MITRE ATT&CK', 'Windows Forensics'],
+    status: 'University Case · Completed',
+    statusClass: '',
+    icon: SearchIcon,
+    iconClass: 'purple',
+  },
+  {
     title: 'Network Penetration Testing Framework',
-    desc: 'Structured workflow to automate reconnaissance and scanning, then guide exploitation and reporting. Focused on repeatability and clean outputs.',
-    tags: ['Kali Linux', 'Nmap', 'Metasploit'],
+    desc: 'Structured workflow to automate reconnaissance and scanning, then guide exploitation and reporting. Focused on repeatability and clean outputs across engagements.',
+    tags: ['Kali Linux', 'Nmap', 'Metasploit', 'Burp Suite'],
     status: 'Featured',
     statusClass: 'featured',
     icon: SkullIcon,
     iconClass: 'purple',
   },
   {
-    title: 'Threat Detection Pipeline',
-    desc: 'Scalable log ingestion and detection concept integrating multiple sources into a centralized workflow, supporting search, alerting, and downstream storage.',
-    tags: ['ELK', 'Kafka', 'MongoDB'],
-    status: 'In Progress',
+    title: 'Encrypted Semantic Communication Systems',
+    desc: 'Research on enhancing the Luo et al. ESCS baseline with LAPI and InfoNCE-guided adaptive training. Co-authored with Maria Slim under Dr. Hadi Sarieddeen, with a publishability assessment targeting IEEE Communications Letters.',
+    tags: ['Deep Learning', 'PyTorch', 'Semantic Comms', 'Research'],
+    status: 'Active Research',
     statusClass: 'progress',
-    icon: ActivityIcon,
-    iconClass: 'blue',
-  },
-  {
-    title: 'Cryptographic Security Suite',
-    desc: 'Implementations of common crypto primitives for learning and controlled demos: symmetric encryption and hashing with attention to correctness and testing.',
-    tags: ['Python', 'AES', 'SHA-256'],
-    status: 'Completed',
-    statusClass: '',
-    icon: LockIcon,
-    iconClass: '',
-  },
-  {
-    title: 'IoT Sensor Data Analysis',
-    desc: 'Analysis pipeline for sensor datasets; useful groundwork for anomaly detection and security monitoring in IoT contexts.',
-    tags: ['Python', 'IoT', 'Data Analysis'],
-    status: 'Completed',
-    statusClass: '',
     icon: NetworkIcon,
     iconClass: 'blue',
   },
   {
-    title: 'DFIR & Triage — University Case Scenario',
-    desc: 'Conducted digital forensics and incident response on a real-world scenario case. Performed evidence acquisition, triage, timeline reconstruction, and artifact analysis across Windows systems. Leveraged Eric Zimmerman\'s forensic tools (KAPE, MFTECmd, PECmd, Registry Explorer, ShellBags Explorer, Timeline Explorer) for deep-dive Windows forensics.',
-    tags: ['DFIR', 'Windows Forensics', 'Eric Zimmerman Tools', 'KAPE', 'Triage', 'Timeline Analysis'],
-    status: 'Completed — University Project',
+    title: 'NIDS with LSTM Autoencoder + XGBoost',
+    desc: 'Network intrusion detection system trained on CIC-IDS2017. Combined LSTM autoencoder reconstruction error with XGBoost classification for layered detection. Co-authored and converted to IEEE LaTeX format.',
+    tags: ['LSTM', 'XGBoost', 'CIC-IDS2017', 'IEEE Format'],
+    status: 'Completed',
     statusClass: '',
-    icon: SearchIcon,
-    iconClass: 'purple',
+    icon: ActivityIcon,
+    iconClass: 'blue',
+  },
+  {
+    title: 'Linux Forensics Toolkit',
+    desc: 'Comprehensive reference document and bash toolchain for Linux forensic analysis. Covers live system analysis, Volatility memory forensics, Sleuth Kit disk analysis, browser forensics (Dumpzilla, SQLite), and file recovery (ext4magic, extundelete, PhotoRec).',
+    tags: ['Volatility', 'Sleuth Kit', 'ext4magic', 'PhotoRec'],
+    status: 'Completed',
+    statusClass: '',
+    icon: BugIcon,
+    iconClass: '',
+  },
+  {
+    title: 'Gmail Security Monitor',
+    desc: 'Automated monitoring pipeline for suspicious email activity using rule-based checks and AI-assisted triage. Built for fast alerting and quarantine-style response workflows.',
+    tags: ['Gmail API', 'JavaScript', 'Automation'],
+    status: 'Completed',
+    statusClass: '',
+    icon: LockIcon,
+    iconClass: '',
   },
 ];
 
@@ -75,7 +93,7 @@ export default function Projects() {
     <>
       <section className="hero">
         <div className="container">
-          <CardGlow className="highlight">
+          <TiltCard className="highlight" intensity={4}>
             <div className="kicker">
               <FingerprintIcon />
               Projects
@@ -84,21 +102,25 @@ export default function Projects() {
               <span className="glitch" data-text="Projects">Projects</span>
             </h1>
             <p className="lead">
-              Selected cybersecurity projects I can confidently explain end-to-end: architecture, tooling choices,
-              implementation details, and testing outcomes.
+              Cybersecurity projects I can confidently explain end-to-end: architecture decisions,
+              tooling choices, implementation details, and measured outcomes.
             </p>
-          </CardGlow>
+          </TiltCard>
         </div>
       </section>
 
       <section className="section">
         <div className="container">
+          <h2 className="section-title">
+            <ActivityIcon />
+            All projects
+          </h2>
           <ScrollReveal stagger>
             <div className="grid two">
               {projects.map((project, i) => {
                 const Icon = project.icon;
                 return (
-                  <CardGlow key={i}>
+                  <TiltCard key={i}>
                     <div className={`card-icon ${project.iconClass}`}>
                       <Icon />
                     </div>
@@ -110,7 +132,7 @@ export default function Projects() {
                       ))}
                     </div>
                     <div className={`status-badge ${project.statusClass}`}>{project.status}</div>
-                  </CardGlow>
+                  </TiltCard>
                 );
               })}
             </div>

@@ -1,9 +1,8 @@
 import React from 'react';
 import ScrollReveal from '../components/ScrollReveal';
-import CardGlow from '../components/CardGlow';
+import TiltCard from '../components/TiltCard';
 import {
   ShieldIcon,
-  SearchIcon,
   GraduationIcon,
   BriefcaseIcon,
   FingerprintIcon,
@@ -15,7 +14,7 @@ export default function About() {
     <>
       <section className="hero">
         <div className="container">
-          <CardGlow className="highlight">
+          <TiltCard className="highlight" intensity={4}>
             <div className="kicker">
               <FingerprintIcon />
               About
@@ -25,9 +24,9 @@ export default function About() {
             </h1>
             <p className="lead">
               I am a senior Computer &amp; Communications Engineering student at the American University of Beirut,
-              focused on cybersecurity operations, incident response, and secure systems design.
+              focused on cybersecurity operations, incident response, and forensic-grade systems design.
             </p>
-          </CardGlow>
+          </TiltCard>
         </div>
       </section>
 
@@ -36,15 +35,15 @@ export default function About() {
           <div className="container">
             <ScrollReveal stagger>
               <div className="grid two">
-                <CardGlow>
+                <TiltCard>
                   <div className="card-icon">
                     <EyeIcon />
                   </div>
                   <h3>Professional summary</h3>
                   <p>
                     My work combines security operations thinking with practical engineering execution.
-                    I enjoy building detection workflows, investigating real security signals, and documenting results
-                    in a way that supports action and decision-making.
+                    I enjoy building detection workflows, investigating real security signals, and designing
+                    systems where forensic integrity is built into the architecture rather than bolted on.
                   </p>
                   <div className="tag-row" aria-label="Core areas">
                     <span className="tag">SOC</span>
@@ -52,20 +51,21 @@ export default function About() {
                     <span className="tag">Pentesting</span>
                     <span className="tag">Secure Systems</span>
                   </div>
-                </CardGlow>
+                </TiltCard>
 
-                <CardGlow>
+                <TiltCard>
                   <div className="card-icon purple">
                     <ShieldIcon />
                   </div>
                   <h3>What I bring</h3>
                   <ul className="list">
                     <li>Practical exposure to monitoring, investigation, and escalation workflows.</li>
+                    <li>Capstone-level experience designing tamper-evident chain-of-custody systems.</li>
                     <li>Clean implementation habits with repeatable setups and clear documentation.</li>
                     <li>Strong learning velocity and confidence in unfamiliar technical environments.</li>
                   </ul>
                   <div className="meta">// Based in Beirut, Lebanon</div>
-                </CardGlow>
+                </TiltCard>
               </div>
             </ScrollReveal>
           </div>
@@ -79,11 +79,14 @@ export default function About() {
               <GraduationIcon />
               Education
             </h2>
-            <CardGlow>
+            <TiltCard>
               <h3>BE, Computer &amp; Communications Engineering</h3>
               <p>American University of Beirut</p>
               <div className="meta">2022 – 2026 · Focus: Cybersecurity and Networking</div>
-            </CardGlow>
+              <div className="meta">
+                Capstone in blockchain-based forensic chain-of-custody systems · Advisor: Dr. Hussein Bakri
+              </div>
+            </TiltCard>
           </div>
         </section>
       </ScrollReveal>
@@ -95,23 +98,23 @@ export default function About() {
               <BriefcaseIcon />
               Experience
             </h2>
-            <CardGlow>
+            <TiltCard>
               <div className="timeline-item">
-                <h4>SOC Analyst Intern – CNS</h4>
+                <h4>SOC Analyst Intern — CNS</h4>
                 <p>Threat detection, SIEM investigation workflows, and incident response support.</p>
                 <div className="meta">Jun 2025 – Present</div>
               </div>
               <div className="timeline-item">
-                <h4>Penetration Tester Intern – Procomix</h4>
+                <h4>Penetration Tester Intern — Procomix</h4>
                 <p>Vulnerability assessments and practical penetration testing with structured reporting.</p>
                 <div className="meta">Jun 2025</div>
               </div>
               <div className="timeline-item">
-                <h4>Security Engineer Intern – Atria Solutions</h4>
+                <h4>Security Engineer Intern — Atria Solutions</h4>
                 <p>Security engineering support, Linux tooling, and operational readiness improvements.</p>
                 <div className="meta">2024 – 2025</div>
               </div>
-            </CardGlow>
+            </TiltCard>
           </div>
         </section>
       </ScrollReveal>

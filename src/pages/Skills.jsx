@@ -1,6 +1,6 @@
 import React from 'react';
 import ScrollReveal from '../components/ScrollReveal';
-import CardGlow from '../components/CardGlow';
+import TiltCard from '../components/TiltCard';
 import {
   ShieldIcon,
   WrenchIcon,
@@ -16,42 +16,42 @@ const skillCategories = [
     iconClass: '',
     items: [
       'SOC workflows: alert triage, investigation, and escalation.',
+      'SIEM engineering: Wazuh, Splunk, and ELK stack deployments.',
+      'Custom detection rule development and tuning.',
       'Incident response fundamentals and reporting discipline.',
-      'Digital forensics basics: artifacts, logs, and timeline analysis.',
-      'Penetration testing foundations: recon, scan, assess, report.',
     ],
   },
   {
-    title: 'Tools',
+    title: 'DFIR & Forensics',
     icon: WrenchIcon,
     iconClass: 'purple',
     items: [
-      'Splunk and ELK stack (Elasticsearch, Logstash, Kibana).',
-      'Wireshark, Nmap, and Metasploit for security assessments.',
-      'Linux and Kali Linux for everyday technical workflows.',
-      'Git-based development and structured collaboration.',
+      'Windows forensics with Eric Zimmerman tools (KAPE, MFTECmd, PECmd).',
+      'Memory forensics with Volatility 2 and 3.',
+      'Linux forensics: Sleuth Kit, ext4magic, PhotoRec, Dumpzilla.',
+      'Timeline reconstruction and MITRE ATT&CK mapping.',
     ],
   },
   {
-    title: 'Programming',
+    title: 'Programming & Systems',
     icon: CodeIcon,
     iconClass: 'blue',
     items: [
       'Python for automation, parsing, and data-handling tasks.',
       'Bash scripting for Linux operations and tooling.',
-      'JavaScript for integrations and lightweight automation.',
+      'JavaScript / React for security tooling and dashboards.',
       'Comfortable reading and extending unfamiliar codebases.',
     ],
   },
   {
-    title: 'Engineering Strengths',
+    title: 'Secure Systems Engineering',
     icon: CpuIcon,
     iconClass: '',
     items: [
-      'Structured thinking and clear technical communication.',
-      'Reproducible workflows and clean implementation style.',
-      'Root-cause oriented debugging and problem solving.',
-      'Strong fundamentals in networking and systems.',
+      'Permissioned blockchain: Hyperledger Fabric chaincode + IPFS.',
+      'Hardened gateway design: jump server, mTLS, MFA, RBAC.',
+      'Network security: OPNsense firewall rules, PF debugging.',
+      'Reproducible lab environments with VMware Workstation.',
     ],
   },
 ];
@@ -61,7 +61,7 @@ export default function Skills() {
     <>
       <section className="hero">
         <div className="container">
-          <CardGlow className="highlight">
+          <TiltCard className="highlight" intensity={4}>
             <div className="kicker">
               <FingerprintIcon />
               Skills
@@ -70,9 +70,9 @@ export default function Skills() {
               <span className="glitch" data-text="Skills">Skills</span>
             </h1>
             <p className="lead">
-              A concise overview of my cybersecurity and engineering toolkit.
+              Cybersecurity, forensics, and engineering — everything I can confidently put my hands on.
             </p>
-          </CardGlow>
+          </TiltCard>
         </div>
       </section>
 
@@ -84,7 +84,7 @@ export default function Skills() {
                 {skillCategories.map((cat) => {
                   const Icon = cat.icon;
                   return (
-                    <CardGlow key={cat.title}>
+                    <TiltCard key={cat.title}>
                       <div className={`card-icon ${cat.iconClass}`}>
                         <Icon />
                       </div>
@@ -94,7 +94,7 @@ export default function Skills() {
                           <li key={j}>{item}</li>
                         ))}
                       </ul>
-                    </CardGlow>
+                    </TiltCard>
                   );
                 })}
               </div>

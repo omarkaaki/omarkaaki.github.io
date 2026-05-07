@@ -20,7 +20,8 @@ const FILE_SYSTEM = {
     '[+] Digital Forensics & Triage',
     '[+] Penetration Testing',
     '[+] Windows & Linux Forensics',
-    '[+] SIEM (Splunk, ELK Stack)',
+    '[+] SIEM (Wazuh, Splunk, ELK Stack)',
+    '[+] Hyperledger Fabric & IPFS',
     '[+] Network Traffic Analysis',
   ],
   'about.txt': [
@@ -32,36 +33,53 @@ const FILE_SYSTEM = {
     '╚══════════════════════════════════════╝',
     '',
     'Senior CCE student focused on SOC operations,',
-    'DFIR workflows, and secure systems design.',
-    'Building clean, measurable, production-minded',
-    'security solutions.',
+    'DFIR workflows, and forensic-grade systems design.',
+    'Capstone: Elegchos blockchain chain-of-custody.',
   ],
   'projects.txt': [
     '┌─────────────────────────────────────────────┐',
-    '│ [01] Gmail Security Monitor          [DONE] │',
-    '│ [02] Network Pentest Framework    [FEATURED] │',
-    '│ [03] Threat Detection Pipeline   [PROGRESS] │',
-    '│ [04] Cryptographic Security Suite    [DONE] │',
-    '│ [05] IoT Sensor Data Analysis       [DONE] │',
-    '│ [06] DFIR & Triage - Uni Case       [DONE] │',
+    '│ [01] Elegchos Blockchain CoC      [CAPSTONE]│',
+    '│ [02] Wazuh SIEM Lab                  [DONE] │',
+    '│ [03] DFIR Triage Investigation       [DONE] │',
+    '│ [04] Network Pentest Framework   [FEATURED] │',
+    '│ [05] ESCS Research Paper          [ACTIVE] │',
+    '│ [06] LSTM/XGBoost NIDS               [DONE] │',
+    '│ [07] Linux Forensics Toolkit         [DONE] │',
+    '│ [08] Gmail Security Monitor          [DONE] │',
+    '└─────────────────────────────────────────────┘',
+  ],
+  'fyp.txt': [
+    '┌── Elegchos · Capstone ──────────────────────┐',
+    '│  Permissioned blockchain for digital chain  │',
+    '│  of custody in forensic investigations.     │',
+    '│                                             │',
+    '│  [+] Hyperledger Fabric (hot ledger)        │',
+    '│  [+] IPFS-backed cold archival              │',
+    '│  [+] Jump-server gateway · mTLS · MFA · RBAC│',
+    '│  [+] 20+ TPS · 0 failures · byte integrity  │',
+    '│                                             │',
+    '│  Team: Omar, Rami, Mostafa, Jad             │',
+    '│  Advisor: Dr. Hussein Bakri                 │',
     '└─────────────────────────────────────────────┘',
   ],
   'status.sh': [
     '[*] Location   : Beirut, Lebanon',
     '[*] Status     : Open to opportunities',
     '[*] Graduation : 2026',
-    '[*] Clearance  : Available',
+    '[*] Capstone   : Elegchos · Hyperledger Fabric',
     '[*] Uptime     : 21 years',
   ],
   'tools.txt': [
     '┌── Analysis ─────────────────────────────┐',
-    '│  Splunk, ELK, Wireshark, Volatility     │',
+    '│  Splunk, Wazuh, ELK, Wireshark, Volatility│',
     '├── Offensive ─────────────────────────────┤',
     '│  Nmap, Metasploit, Burp Suite, sqlmap   │',
     '├── Forensics ─────────────────────────────┤',
     '│  KAPE, Autopsy, FTK, Eric Zimmerman     │',
+    '├── Blockchain ────────────────────────────┤',
+    '│  Hyperledger Fabric, IPFS, Chaincode    │',
     '├── Development ───────────────────────────┤',
-    '│  Python, Bash, JavaScript, Git          │',
+    '│  Python, Bash, JavaScript, Go, Git      │',
     '└─────────────────────────────────────────┘',
   ],
   'contact.txt': [
@@ -94,7 +112,8 @@ const COMMANDS = {
       '│  banner        - Show ASCII banner            │',
       '│                                               │',
       '│  Files: skills.txt, about.txt, projects.txt   │',
-      '│         tools.txt, contact.txt, status.sh     │',
+      '│         tools.txt, contact.txt, fyp.txt       │',
+      '│         status.sh                              │',
       '│                                               │',
       '└───────────────────────────────────────────────┘',
     ],
@@ -110,7 +129,7 @@ const COMMANDS = {
     lines: [
       'drwxr-xr-x  evidence/    forensics/    reports/',
       '-rw-r--r--  skills.txt   about.txt     projects.txt',
-      '-rw-r--r--  tools.txt    contact.txt',
+      '-rw-r--r--  tools.txt    contact.txt   fyp.txt',
       '-rwxr-xr-x  status.sh',
     ],
     type: 'default',
@@ -171,7 +190,7 @@ const COMMANDS = {
       '392    380    csrss.exe         0x86289030',
       '436    380    wininit.exe       0x862dd030',
       '456    428    csrss.exe         0x862f1850',
-      '508    436    services.exe      0x86375580',
+      '508    436    services.exe     0x86375580',
       '520    436    lsass.exe         0x8637d888',
       '1124   508    svchost.exe       0x866a7030',
       '2048   1      suspicious.exe    0x87b23440  ⚠ ALERT',
@@ -214,7 +233,6 @@ function processCommand(input, history) {
     };
   }
 
-  // cat <file>
   if (trimmed.startsWith('cat ')) {
     const file = trimmed.slice(4).trim();
     if (FILE_SYSTEM[file]) {
@@ -223,18 +241,15 @@ function processCommand(input, history) {
     return { lines: [`cat: ${file}: No such file or directory`], type: 'error' };
   }
 
-  // ./status.sh
   if (trimmed === './status.sh' || trimmed === 'bash status.sh') {
     return { lines: FILE_SYSTEM['status.sh'], type: 'success' };
   }
 
-  // nmap with args
   if (trimmed.startsWith('nmap')) {
     const args = trimmed.slice(4).trim().replace(/^-\S+\s*/, '');
     return COMMANDS.nmap(args);
   }
 
-  // Direct command
   const cmd = COMMANDS[trimmed];
   if (cmd) return cmd();
 
@@ -253,7 +268,6 @@ export default function InteractiveTerminal() {
   const bodyRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Boot animation
   useEffect(() => {
     const bootLines = [
       { text: BANNER, type: 'ascii', delay: 0 },
@@ -300,12 +314,10 @@ export default function InteractiveTerminal() {
       setInput('');
       setHistIndex(-1);
 
-      // Add command to history
       if (cmd.trim()) {
         setHistory((prev) => [...prev, cmd.trim()]);
       }
 
-      // Add prompt line
       const promptLine = { text: `┌──(root㉿kali)-[~/forensics]\n└─$ ${cmd}`, type: 'prompt' };
 
       const result = processCommand(cmd, [...history, cmd.trim()]);
@@ -348,7 +360,6 @@ export default function InteractiveTerminal() {
         }
       } else if (e.key === 'Tab') {
         e.preventDefault();
-        // Tab completion
         const partial = input.trim().toLowerCase();
         const allCommands = [...Object.keys(COMMANDS), 'clear', 'history'];
         const allFiles = Object.keys(FILE_SYSTEM);

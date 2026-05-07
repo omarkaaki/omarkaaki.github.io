@@ -1,6 +1,6 @@
 import React from 'react';
 import ScrollReveal from '../components/ScrollReveal';
-import CardGlow from '../components/CardGlow';
+import TiltCard from '../components/TiltCard';
 import {
   MailIcon,
   LinkedInIcon,
@@ -13,7 +13,7 @@ export default function Contact() {
     <>
       <section className="hero">
         <div className="container">
-          <CardGlow className="highlight">
+          <TiltCard className="highlight" intensity={4}>
             <div className="kicker">
               <FingerprintIcon />
               Contact
@@ -21,8 +21,11 @@ export default function Contact() {
             <h1>
               <span className="glitch" data-text="Contact">Contact</span>
             </h1>
-            <p className="lead">Open to internships, security engineering opportunities, and research collaborations.</p>
-          </CardGlow>
+            <p className="lead">
+              Open to entry-level cybersecurity roles, internships, security engineering opportunities,
+              and research collaborations.
+            </p>
+          </TiltCard>
         </div>
       </section>
 
@@ -31,7 +34,7 @@ export default function Contact() {
           <div className="container">
             <ScrollReveal stagger>
               <div className="grid three">
-                <CardGlow>
+                <TiltCard>
                   <div className="card-icon">
                     <MailIcon />
                   </div>
@@ -41,9 +44,9 @@ export default function Contact() {
                     <a className="btn primary" href="mailto:omarkaaki2004@gmail.com">Send Email</a>
                   </div>
                   <div className="meta">omarkaaki2004@gmail.com</div>
-                </CardGlow>
+                </TiltCard>
 
-                <CardGlow>
+                <TiltCard>
                   <div className="card-icon purple">
                     <LinkedInIcon />
                   </div>
@@ -60,16 +63,16 @@ export default function Contact() {
                     </a>
                   </div>
                   <div className="meta">linkedin.com/in/omar-kaaki-393880312</div>
-                </CardGlow>
+                </TiltCard>
 
-                <CardGlow>
+                <TiltCard>
                   <div className="card-icon blue">
                     <MapPinIcon />
                   </div>
                   <h3>Location</h3>
-                  <p>Beirut, Lebanon. Available for remote opportunities.</p>
-                  <div className="meta">Timezone: Asia/Beirut</div>
-                </CardGlow>
+                  <p>Beirut, Lebanon. Available for remote opportunities and visa sponsorship in the UK.</p>
+                  <div className="meta">Timezone: Asia/Beirut · UTC+2</div>
+                </TiltCard>
               </div>
             </ScrollReveal>
           </div>

@@ -11,7 +11,9 @@ import Contact from './pages/Contact';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-  React.useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   return null;
 }
 

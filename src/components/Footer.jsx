@@ -8,15 +8,23 @@ export default function Footer() {
       <div className="container">
         <div className="footer-row">
           <div>
-            <p>&copy; 2026 Omar Kaaki.</p>
+            <p>&copy; {new Date().getFullYear()} Omar Kaaki.</p>
             <p className="footer-brand">
-              <ShieldIcon style={{ width: 12, height: 12, display: 'inline', verticalAlign: 'middle', marginRight: 4 }} />
-              DFIR &middot; SOC &middot; Pentesting
+              <ShieldIcon
+                style={{
+                  width: 12,
+                  height: 12,
+                  display: 'inline',
+                  verticalAlign: 'middle',
+                  marginRight: 4,
+                }}
+              />
+              DFIR · SOC · Secure Systems · Built with React + Three.js
             </p>
           </div>
           <p>
-            <Link to="/projects">Projects</Link> &middot;{' '}
-            <Link to="/skills">Skills</Link> &middot;{' '}
+            <Link to="/projects">Projects</Link> ·{' '}
+            <Link to="/skills">Skills</Link> ·{' '}
             <Link to="/contact">Contact</Link>
           </p>
         </div>
