@@ -432,11 +432,10 @@ main {
 
 .hero-cinema-bottom {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
   gap: 1.6rem;
-  flex-wrap: wrap;
+  text-align: center;
 }
 
 .hero-kicker {
@@ -573,7 +572,7 @@ main {
   padding-top: 1.4rem;
   border-top: 1px solid var(--line);
   flex-wrap: wrap;
-  max-width: 600px;
+  justify-content: center;
 }
 .hero-meta {
   display: flex;
