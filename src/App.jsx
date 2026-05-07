@@ -1,8 +1,13 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ParticleCanvas from './components/ParticleCanvas';
+import SmoothScroll from './components/SmoothScroll';
+import CustomCursor from './components/CustomCursor';
+import StatusBar from './components/StatusBar';
+import GrainOverlay from './components/GrainOverlay';
 import Home from './pages/Home';
 import About from './pages/About';
 import Projects from './pages/Projects';
@@ -17,22 +22,60 @@ function ScrollToTop() {
   return null;
 }
 
-export default function App() {
+const pageVariants = {
+  initial: { opacity: 0, y: 18, filter: 'blur(8px)' },
+  enter: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    filter: 'blur(6px)',
+    transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] },
+  },
+};
+
+function AnimatedRoutes() {
+  const location = useLocation();
   return (
-    <Router>
-      <ScrollToTop />
-      <ParticleCanvas />
-      <Navbar />
-      <main>
-        <Routes>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        variants={pageVariants}
+        initial="initial"
+        animate="enter"
+        exit="exit"
+      >
+        <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/skills" element={<Skills />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
-      </main>
-      <Footer />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <SmoothScroll>
+        <ScrollToTop />
+        <CustomCursor />
+        <ParticleCanvas />
+        <StatusBar />
+        <Navbar />
+        <main>
+          <AnimatedRoutes />
+        </main>
+        <Footer />
+        <GrainOverlay />
+      </SmoothScroll>
     </Router>
   );
 }

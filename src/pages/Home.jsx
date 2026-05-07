@@ -2,9 +2,10 @@ import React, { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import InteractiveTerminal from '../components/InteractiveTerminal';
-import TypingEffect from '../components/TypingEffect';
+import ScrambleText from '../components/ScrambleText';
 import ScrollReveal from '../components/ScrollReveal';
 import TiltCard from '../components/TiltCard';
+import MagneticButton from '../components/MagneticButton';
 import {
   ShieldIcon,
   SearchIcon,
@@ -16,104 +17,128 @@ import {
   SkullIcon,
 } from '../components/Icons';
 
-// Code-split the heavy 3D scene so the page boots fast
 const Scene3D = lazy(() => import('../components/Scene3D'));
 
-const heroVariants = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } },
+const fadeUp = {
+  hidden: { opacity: 0, y: 14 },
+  show: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay, duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+  }),
 };
 
 export default function Home() {
   return (
     <>
-      <section className="hero hero-3d">
-        <div className="container">
-          <div className="hero-grid hero-grid-3d">
-            <motion.div
-              initial="hidden"
-              animate="show"
-              variants={heroVariants}
-            >
-              <TiltCard className="highlight" intensity={4}>
-                <div className="kicker">
-                  <FingerprintIcon />
-                  Cybersecurity Portfolio · 2026
-                </div>
-                <h1 className="hero-title">
-                  <TypingEffect
-                    text="Building security systems that hold up under scrutiny."
-                    speed={45}
-                  />
-                </h1>
-                <p className="lead">
-                  I am Omar Kaaki, a senior Computer &amp; Communications Engineering student at AUB
-                  focused on DFIR, SOC operations, and forensic-grade systems design — comfortable
-                  moving between detection engineering, incident investigation, and the systems thinking
-                  behind both.
-                </p>
-                <div className="btn-row">
-                  <Link className="btn primary" to="/projects">Explore Projects</Link>
-                  <Link className="btn secondary" to="/contact">Get in Touch</Link>
-                </div>
+      <Suspense fallback={null}>
+        <Scene3D />
+      </Suspense>
 
-                <div className="hero-stats">
-                  <div className="hero-stat">
-                    <strong>3+</strong>
-                    <span>Cybersecurity internships</span>
-                  </div>
-                  <div className="hero-stat">
-                    <strong>10+</strong>
-                    <span>Cybersecurity projects shipped</span>
-                  </div>
-                  <div className="hero-stat">
-                    <strong>2026</strong>
-                    <span>Graduating class</span>
-                  </div>
-                </div>
-              </TiltCard>
-            </motion.div>
+      <section className="hero-cinema" aria-label="Intro">
+        <div className="hero-cinema-grid container">
+          <motion.div
+            className="hero-kicker"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={0.05}
+          >
+            <span className="hero-kicker-dot" />
+            <FingerprintIcon />
+            CYBERSECURITY · DFIR · 2026
+          </motion.div>
 
-            <motion.div
-              className="scene-stage"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <Suspense fallback={<div className="scene-loading">Initializing kernel…</div>}>
-                <Scene3D />
-              </Suspense>
-              <div className="scene-overlay">
-                <div className="scene-label">
-                  <span className="dot" />
-                  /core/security/runtime · stable
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          <h1 className="hero-display" aria-label="Omar Kaaki">
+            <span className="hero-display-line">
+              <ScrambleText text="OMAR" delay={150} duration={1100} />
+            </span>
+            <span className="hero-display-line hero-display-line--shift">
+              <ScrambleText text="KAAKI" delay={520} duration={1300} />
+            </span>
+          </h1>
+
+          <motion.p
+            className="hero-tagline"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={1.0}
+          >
+            Building security systems that hold up under scrutiny —
+            <span className="text-accent"> detection engineering, incident response, and forensic-grade systems</span>{' '}
+            for the moments where evidence matters.
+          </motion.p>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="terminal-row"
+            className="hero-cta-row"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={1.2}
           >
-            <InteractiveTerminal />
+            <MagneticButton>
+              <Link className="btn primary" to="/projects" data-cursor>
+                <span>Explore Projects</span>
+                <span className="btn-arrow" aria-hidden>→</span>
+              </Link>
+            </MagneticButton>
+            <MagneticButton>
+              <Link className="btn secondary" to="/contact" data-cursor>
+                <span>Get in Touch</span>
+              </Link>
+            </MagneticButton>
+          </motion.div>
+
+          <motion.div
+            className="hero-meta-row"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={1.4}
+          >
+            <div className="hero-meta">
+              <span className="meta-num">03+</span>
+              <span className="meta-label">Cybersecurity internships</span>
+            </div>
+            <div className="hero-meta">
+              <span className="meta-num">10+</span>
+              <span className="meta-label">Projects shipped</span>
+            </div>
+            <div className="hero-meta">
+              <span className="meta-num">2026</span>
+              <span className="meta-label">Graduating class</span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="hero-scroll-hint"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.7 }}
+            transition={{ delay: 1.8, duration: 0.8 }}
+            aria-hidden
+          >
+            <span>SCROLL</span>
+            <span className="scroll-line" />
           </motion.div>
         </div>
       </section>
 
       <ScrollReveal>
-        <section className="section">
+        <section className="section section-cinema">
           <div className="container">
-            <h2 className="section-title">
-              <RadarIcon />
-              What I focus on
-            </h2>
-            <p className="section-lead">Hands-on cybersecurity work supported by solid systems engineering fundamentals.</p>
+            <header className="section-head">
+              <span className="section-num">01</span>
+              <h2 className="section-display">
+                <RadarIcon /> What I focus on.
+              </h2>
+              <p className="section-lead">
+                Hands-on cybersecurity work supported by solid systems engineering fundamentals.
+              </p>
+            </header>
             <ScrollReveal stagger>
               <div className="grid three">
-                <TiltCard>
+                <TiltCard intensity={10}>
                   <div className="card-icon">
                     <ShieldIcon />
                   </div>
@@ -125,7 +150,7 @@ export default function Home() {
                     <span className="tag">ELK</span>
                   </div>
                 </TiltCard>
-                <TiltCard>
+                <TiltCard intensity={10}>
                   <div className="card-icon purple">
                     <SearchIcon />
                   </div>
@@ -137,7 +162,7 @@ export default function Home() {
                     <span className="tag">Sleuth Kit</span>
                   </div>
                 </TiltCard>
-                <TiltCard>
+                <TiltCard intensity={10}>
                   <div className="card-icon blue">
                     <LockIcon />
                   </div>
@@ -156,15 +181,34 @@ export default function Home() {
       </ScrollReveal>
 
       <ScrollReveal>
-        <section className="section">
+        <section className="section section-cinema">
           <div className="container">
-            <h2 className="section-title">
-              <ActivityIcon />
-              Other featured projects
-            </h2>
+            <header className="section-head">
+              <span className="section-num">02</span>
+              <h2 className="section-display">
+                <ActivityIcon /> Live workspace.
+              </h2>
+              <p className="section-lead">
+                Try a few commands — type <code>help</code> to see the kit.
+              </p>
+            </header>
+            <InteractiveTerminal />
+          </div>
+        </section>
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <section className="section section-cinema">
+          <div className="container">
+            <header className="section-head">
+              <span className="section-num">03</span>
+              <h2 className="section-display">
+                <ActivityIcon /> Other featured projects.
+              </h2>
+            </header>
             <ScrollReveal stagger>
               <div className="grid two">
-                <TiltCard>
+                <TiltCard intensity={10}>
                   <div className="card-icon purple">
                     <SkullIcon />
                   </div>
@@ -177,7 +221,7 @@ export default function Home() {
                   </div>
                   <div className="status-badge featured">Featured</div>
                 </TiltCard>
-                <TiltCard>
+                <TiltCard intensity={10}>
                   <div className="card-icon">
                     <DatabaseIcon />
                   </div>
@@ -193,7 +237,12 @@ export default function Home() {
               </div>
             </ScrollReveal>
             <div className="btn-row">
-              <Link className="btn secondary" to="/projects">View all projects →</Link>
+              <MagneticButton>
+                <Link className="btn secondary" to="/projects" data-cursor>
+                  <span>View all projects</span>
+                  <span className="btn-arrow" aria-hidden>→</span>
+                </Link>
+              </MagneticButton>
             </div>
           </div>
         </section>
