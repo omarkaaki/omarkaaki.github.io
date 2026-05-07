@@ -402,24 +402,38 @@ main {
 .reveal-stagger > *:nth-child(6) { transition-delay: 0.4s; }
 
 /* ===== HERO CINEMA (full-bleed scroll-driven) =====
-   Content anchors to the top so the visible page actually starts where the
-   user expects. No align-center on the flex/grid; padding-top alone reserves
-   space under the floating navbar + status bar. */
+   Top band sits just under the floating navbar; bottom band anchors to the
+   viewport bottom. Content fills the height, so nothing visually "centers". */
 .hero-cinema {
   min-height: 100vh;
   position: relative;
-  display: flex;
-  align-items: flex-start;
-  padding: 0 0 6vh;
 }
 
 .hero-cinema-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.6rem;
-  padding: clamp(120px, 18vh, 200px) 0 0;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  padding: clamp(110px, 13vh, 150px) 0 4vh;
+  gap: 2rem;
   width: 100%;
+  position: relative;
+}
+
+.hero-cinema-top {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 100%;
+}
+
+.hero-cinema-bottom {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.6rem;
+  flex-wrap: wrap;
 }
 
 .hero-kicker {
@@ -578,9 +592,6 @@ main {
 }
 
 .hero-scroll-hint {
-  position: absolute;
-  bottom: -7vh;
-  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;

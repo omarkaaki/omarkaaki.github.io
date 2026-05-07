@@ -111,10 +111,10 @@ export default function Projects() {
             </TiltCard>
             <div className="hero-widget-stage">
               <Suspense fallback={null}>
-                <HeroWidget variant="shield" />
+                <HeroWidget variant="crt" />
               </Suspense>
               <div className="widget-overlay">
-                <span className="widget-label">/perimeter/active · armed</span>
+                <span className="widget-label">/dfir_projects.log · 8 records</span>
               </div>
             </div>
           </div>

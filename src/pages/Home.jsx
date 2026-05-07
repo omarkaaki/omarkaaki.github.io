@@ -31,90 +31,94 @@ export default function Home() {
     <>
       <section className="hero-cinema" aria-label="Intro">
         <div className="hero-cinema-grid container">
-          <motion.div
-            className="hero-kicker"
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={0.05}
-          >
-            <span className="hero-kicker-dot" />
-            <FingerprintIcon />
-            CYBERSECURITY · DFIR · 2026
-          </motion.div>
+          <div className="hero-cinema-top">
+            <motion.div
+              className="hero-kicker"
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={0.05}
+            >
+              <span className="hero-kicker-dot" />
+              <FingerprintIcon />
+              CYBERSECURITY · DFIR · 2026
+            </motion.div>
 
-          <h1 className="hero-display" aria-label="Omar Kaaki">
-            <span className="hero-display-line">
-              <ScrambleText text="OMAR" delay={150} duration={1100} />
-            </span>
-            <span className="hero-display-line hero-display-line--shift">
-              <ScrambleText text="KAAKI" delay={520} duration={1300} />
-            </span>
-          </h1>
+            <h1 className="hero-display" aria-label="Omar Kaaki">
+              <span className="hero-display-line">
+                <ScrambleText text="OMAR" delay={150} duration={1100} />
+              </span>
+              <span className="hero-display-line hero-display-line--shift">
+                <ScrambleText text="KAAKI" delay={520} duration={1300} />
+              </span>
+            </h1>
 
-          <motion.p
-            className="hero-tagline"
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={1.0}
-          >
-            Building security systems that hold up under scrutiny —
-            <span className="text-accent"> detection engineering, incident response, and forensic-grade systems</span>{' '}
-            for the moments where evidence matters.
-          </motion.p>
+            <motion.p
+              className="hero-tagline"
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={1.0}
+            >
+              Building security systems that hold up under scrutiny —
+              <span className="text-accent"> detection engineering, incident response, and forensic-grade systems</span>{' '}
+              for the moments where evidence matters.
+            </motion.p>
 
-          <motion.div
-            className="hero-cta-row"
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={1.2}
-          >
-            <MagneticButton>
-              <Link className="btn primary" to="/projects" data-cursor>
-                <span>Explore Projects</span>
-                <span className="btn-arrow" aria-hidden>→</span>
-              </Link>
-            </MagneticButton>
-            <MagneticButton>
-              <Link className="btn secondary" to="/contact" data-cursor>
-                <span>Get in Touch</span>
-              </Link>
-            </MagneticButton>
-          </motion.div>
+            <motion.div
+              className="hero-cta-row"
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={1.2}
+            >
+              <MagneticButton>
+                <Link className="btn primary" to="/projects" data-cursor>
+                  <span>Explore Projects</span>
+                  <span className="btn-arrow" aria-hidden>→</span>
+                </Link>
+              </MagneticButton>
+              <MagneticButton>
+                <Link className="btn secondary" to="/contact" data-cursor>
+                  <span>Get in Touch</span>
+                </Link>
+              </MagneticButton>
+            </motion.div>
+          </div>
 
-          <motion.div
-            className="hero-meta-row"
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={1.4}
-          >
-            <div className="hero-meta">
-              <span className="meta-num">03+</span>
-              <span className="meta-label">Cybersecurity internships</span>
-            </div>
-            <div className="hero-meta">
-              <span className="meta-num">10+</span>
-              <span className="meta-label">Projects shipped</span>
-            </div>
-            <div className="hero-meta">
-              <span className="meta-num">2026</span>
-              <span className="meta-label">Graduating class</span>
-            </div>
-          </motion.div>
+          <div className="hero-cinema-bottom">
+            <motion.div
+              className="hero-meta-row"
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              custom={1.4}
+            >
+              <div className="hero-meta">
+                <span className="meta-num">03+</span>
+                <span className="meta-label">Cybersecurity internships</span>
+              </div>
+              <div className="hero-meta">
+                <span className="meta-num">10+</span>
+                <span className="meta-label">Projects shipped</span>
+              </div>
+              <div className="hero-meta">
+                <span className="meta-num">2026</span>
+                <span className="meta-label">Graduating class</span>
+              </div>
+            </motion.div>
 
-          <motion.div
-            className="hero-scroll-hint"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
-            transition={{ delay: 1.8, duration: 0.8 }}
-            aria-hidden
-          >
-            <span>SCROLL</span>
-            <span className="scroll-line" />
-          </motion.div>
+            <motion.div
+              className="hero-scroll-hint"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.7 }}
+              transition={{ delay: 1.8, duration: 0.8 }}
+              aria-hidden
+            >
+              <span>SCROLL</span>
+              <span className="scroll-line" />
+            </motion.div>
+          </div>
         </div>
       </section>
 

@@ -12,6 +12,12 @@ export default function SmoothScroll({ children }) {
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+    // Force the document to the top BEFORE Lenis instantiates, so Lenis
+    // reads scrollY=0 and uses 0 as its initial targetScroll.
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -29,18 +35,20 @@ export default function SmoothScroll({ children }) {
     };
     rafId = requestAnimationFrame(raf);
 
-    // Defer scroll-to-top to next frame so the rAF loop is running when
-    // Lenis applies it. Then re-fire once more after a short delay in case
-    // any layout shift (font loads, lazy modules) nudges the page.
+    // Re-pin to 0 at multiple delays to absorb font / lazy-module layout shifts.
     const settle = () => lenis.scrollTo(0, { immediate: true, force: true });
     requestAnimationFrame(settle);
     const t1 = setTimeout(settle, 80);
     const t2 = setTimeout(settle, 250);
+    const t3 = setTimeout(settle, 600);
+    const t4 = setTimeout(settle, 1200);
 
     return () => {
       cancelAnimationFrame(rafId);
       clearTimeout(t1);
       clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
       lenis.destroy();
       if (window.__lenis === lenis) delete window.__lenis;
     };

@@ -31,10 +31,10 @@ export default function Contact() {
             </TiltCard>
             <div className="hero-widget-stage">
               <Suspense fallback={null}>
-                <HeroWidget variant="cipher" />
+                <HeroWidget variant="handshake" />
               </Suspense>
               <div className="widget-overlay">
-                <span className="widget-label">/channel/encrypted · streaming</span>
+                <span className="widget-label">/handshake/tls1.3 · authenticated</span>
               </div>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function Contact() {
                     <MapPinIcon />
                   </div>
                   <h3>Location</h3>
-                  <p>Beirut, Lebanon. Available for remote opportunities and visa sponsorship in the UK.</p>
+                  <p>Beirut, Lebanon.</p>
                   <div className="meta">Timezone: Asia/Beirut · UTC+2</div>
                 </TiltCard>
               </div>

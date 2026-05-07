@@ -1,333 +1,274 @@
-import React, { useRef, useMemo, Suspense } from 'react';
+import React, { useRef, useMemo, useEffect, useState, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
 /**
- * Per-page 3D widgets — each one tied to a security/DFIR concept:
- *   biometric → About    (rotating wireframe eye with iris ring + scanning beam)
- *   shield    → Projects (hex perimeter shield with orbiting threats deflecting off)
- *   radar     → Skills   (concentric rings + sweep line + blips appearing on detection)
- *   cipher    → Contact  (matrix-style falling glyphs — encrypted data stream)
+ * Per-page 3D widgets — each tied to a Mr-Robot / DFIR / hacking concept:
+ *   terminal  → About    (3D Kali console with whoami / id / scan output)
+ *   crt       → Projects (CRT monitor displaying a project list)
+ *   cipher    → Skills   (matrix-style falling glyph stream)
+ *   handshake → Contact  (encrypted handshake: client ↔ lock ↔ server)
  *
- * Lightweight: no post-processing (the home Scene3D supplies bloom across the
- * whole page), and emissive colors via toneMapped={false} stay punchy.
+ * No post-processing — Scene3D in the background already supplies bloom and
+ * the home Canvas is enough GPU pressure. toneMapped={false} keeps colors
+ * vivid against the dark cards.
  */
 
 /* ============================================================
- * BIOMETRIC — wireframe eye + iris ring + scanning beam (About)
+ * TERMINAL (About)
  * ============================================================ */
-function BiometricScene() {
-  const eyeballRef = useRef();
-  const irisRef = useRef();
-  const pupilGlowRef = useRef();
-  const scanBeamRef = useRef();
+function TerminalScene() {
+  const groupRef = useRef();
+  const [cursorOn, setCursorOn] = useState(true);
 
-  useFrame((state, dt) => {
+  useEffect(() => {
+    const id = setInterval(() => setCursorOn((v) => !v), 530);
+    return () => clearInterval(id);
+  }, []);
+
+  useFrame((state) => {
     const t = state.clock.elapsedTime;
-    if (eyeballRef.current) {
-      // Eye "looks around" — slow drift in rotation
-      eyeballRef.current.rotation.y = Math.sin(t * 0.4) * 0.35;
-      eyeballRef.current.rotation.x = Math.cos(t * 0.3) * 0.2;
-    }
-    if (irisRef.current) {
-      irisRef.current.rotation.z += dt * 0.6;
-    }
-    if (pupilGlowRef.current) {
-      const pulse = 0.7 + Math.sin(t * 3.2) * 0.3;
-      pupilGlowRef.current.scale.setScalar(pulse);
-    }
-    if (scanBeamRef.current) {
-      // Vertical scanning beam sweeps top-to-bottom on a 2.5s loop
-      const period = 2.5;
-      const phase = (t % period) / period;
-      scanBeamRef.current.position.y = 1.4 - phase * 2.8;
-      const mat = scanBeamRef.current.material;
-      if (mat) mat.opacity = Math.sin(phase * Math.PI) * 0.6;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(t * 0.32) * 0.18;
+      groupRef.current.rotation.x = -0.04 + Math.cos(t * 0.25) * 0.06;
     }
   });
 
+  const lines = [
+    { txt: '$ whoami', kind: 'cmd' },
+    { txt: 'omar_kaaki', kind: 'out' },
+    { txt: '$ id', kind: 'cmd' },
+    { txt: 'uid=1000(omar) groups=dfir,soc', kind: 'out' },
+    { txt: '$ ./investigate --evidence', kind: 'cmd' },
+    { txt: '[+] kit ready', kind: 'ok' },
+    { txt: '[+] timeline reconstructed', kind: 'ok' },
+  ];
+
+  const colorFor = (k) => (k === 'cmd' ? '#f4b400' : k === 'ok' ? '#00ff88' : '#cfd6cb');
+
   return (
-    <group>
-      <group ref={eyeballRef}>
-        {/* Outer wireframe eyeball */}
-        <mesh>
-          <sphereGeometry args={[1.25, 28, 28]} />
-          <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.32} toneMapped={false} />
-        </mesh>
-        {/* Front iris plate (faces camera) */}
-        <group ref={irisRef} position={[0, 0, 0.92]}>
-          <mesh>
-            <torusGeometry args={[0.55, 0.04, 8, 48]} />
-            <meshBasicMaterial color="#00ff88" toneMapped={false} />
-          </mesh>
-          <mesh>
-            <torusGeometry args={[0.4, 0.018, 8, 48]} />
-            <meshBasicMaterial color="#00ff88" transparent opacity={0.7} toneMapped={false} />
-          </mesh>
-          {/* Iris radial spokes */}
-          {Array.from({ length: 16 }).map((_, i) => {
-            const angle = (i / 16) * Math.PI * 2;
-            const x = Math.cos(angle) * 0.46;
-            const y = Math.sin(angle) * 0.46;
-            return (
-              <mesh key={i} position={[x, y, 0]} rotation={[0, 0, angle]}>
-                <boxGeometry args={[0.18, 0.014, 0.014]} />
-                <meshBasicMaterial color="#00ff88" toneMapped={false} />
-              </mesh>
-            );
-          })}
-        </group>
-        {/* Pupil */}
-        <mesh position={[0, 0, 0.98]}>
-          <sphereGeometry args={[0.16, 18, 18]} />
-          <meshBasicMaterial color="#000000" />
-        </mesh>
-        {/* Pupil glow halo */}
-        <mesh ref={pupilGlowRef} position={[0, 0, 1.0]}>
-          <sphereGeometry args={[0.22, 18, 18]} />
-          <meshBasicMaterial color="#f4b400" transparent opacity={0.45} toneMapped={false} />
-        </mesh>
-      </group>
-
-      {/* Scan beam (horizontal plane that sweeps vertically) */}
-      <mesh ref={scanBeamRef} position={[0, 0, 0.5]}>
-        <planeGeometry args={[3.4, 0.06]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.5} side={THREE.DoubleSide} toneMapped={false} />
+    <group ref={groupRef}>
+      {/* Solid back panel */}
+      <mesh position={[0, 0, -0.04]}>
+        <planeGeometry args={[3.7, 2.4]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.92} />
       </mesh>
-
-      {/* Subtle halo */}
+      {/* Wireframe terminal frame */}
       <mesh>
-        <sphereGeometry args={[1.4, 16, 16]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.04} side={THREE.BackSide} toneMapped={false} />
+        <planeGeometry args={[3.7, 2.4]} />
+        <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.5} toneMapped={false} />
       </mesh>
-    </group>
-  );
-}
 
-/* ============================================================
- * SHIELD — hex perimeter + orbiting threats getting deflected (Projects)
- * ============================================================ */
-function ShieldScene() {
-  const shieldRef = useRef();
-  const emblemRef = useRef();
-  const ringRef = useRef();
-  const NUM_THREATS = 6;
-  const threatRefs = useRef([]);
+      {/* Title bar */}
+      <mesh position={[0, 1.04, 0.005]}>
+        <planeGeometry args={[3.7, 0.22]} />
+        <meshBasicMaterial color="#0a0908" />
+      </mesh>
+      <mesh position={[0, 0.93, 0.006]}>
+        <planeGeometry args={[3.7, 0.005]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.5} toneMapped={false} />
+      </mesh>
+      {/* Traffic lights */}
+      <mesh position={[-1.65, 1.04, 0.012]}>
+        <circleGeometry args={[0.045, 16]} />
+        <meshBasicMaterial color="#ff5f57" toneMapped={false} />
+      </mesh>
+      <mesh position={[-1.5, 1.04, 0.012]}>
+        <circleGeometry args={[0.045, 16]} />
+        <meshBasicMaterial color="#febc2e" toneMapped={false} />
+      </mesh>
+      <mesh position={[-1.35, 1.04, 0.012]}>
+        <circleGeometry args={[0.045, 16]} />
+        <meshBasicMaterial color="#28c840" toneMapped={false} />
+      </mesh>
+      <Text
+        position={[0, 1.04, 0.02]}
+        fontSize={0.1}
+        color="#7c8c80"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        root@omar:~/forensics
+      </Text>
 
-  useFrame((state, dt) => {
-    const t = state.clock.elapsedTime;
-    if (shieldRef.current) {
-      shieldRef.current.rotation.y += dt * 0.18;
-      shieldRef.current.rotation.x = Math.sin(t * 0.3) * 0.12;
-    }
-    if (emblemRef.current) {
-      emblemRef.current.rotation.x += dt * 0.5;
-      emblemRef.current.rotation.z += dt * 0.3;
-    }
-    if (ringRef.current) {
-      // Pulse the perimeter ring
-      const s = 1 + Math.sin(t * 1.4) * 0.04;
-      ringRef.current.scale.setScalar(s);
-      const mat = ringRef.current.material;
-      if (mat) mat.opacity = 0.35 + Math.sin(t * 1.4) * 0.15;
-    }
-    // Threats orbit and "bounce" off the shield (radius oscillates between 1.4 outer and 1.15 deflection)
-    threatRefs.current.forEach((th, i) => {
-      if (!th) return;
-      const phase = (i / NUM_THREATS) * Math.PI * 2;
-      const angle = t * 0.5 + phase;
-      // Radial bounce — threats approach 1.15 (shield surface) then bounce back to 2.0
-      const radial = 1.4 + Math.sin(t * 1.6 + phase) * 0.55;
-      th.position.set(
-        Math.cos(angle) * radial,
-        Math.sin(angle * 1.3 + phase) * 0.35,
-        Math.sin(angle) * radial
-      );
-      const mat = th.material;
-      // When close to shield, flash brighter
-      const closeness = Math.max(0, 1 - (radial - 1.15) / 0.85);
-      if (mat) {
-        mat.color.setRGB(
-          1,
-          0.25 + closeness * 0.5,
-          0.25 + closeness * 0.2
-        );
-      }
-      const pulse = 0.7 + Math.sin(t * 4 + phase) * 0.3;
-      th.scale.setScalar(pulse);
-    });
-  });
-
-  return (
-    <group>
-      {/* Hex shield body */}
-      <group ref={shieldRef}>
-        {/* Solid hex face */}
-        <mesh>
-          <cylinderGeometry args={[1.05, 1.05, 0.16, 6, 1, false]} />
-          <meshStandardMaterial
-            color="#0a2018"
-            emissive="#00ff88"
-            emissiveIntensity={0.42}
-            metalness={0.85}
-            roughness={0.22}
-          />
-        </mesh>
-        {/* Hex outline (slightly larger, wireframe) */}
-        <mesh ref={ringRef}>
-          <cylinderGeometry args={[1.12, 1.12, 0.18, 6, 1, false]} />
-          <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.5} toneMapped={false} />
-        </mesh>
-        {/* Emblem at center */}
-        <mesh ref={emblemRef}>
-          <octahedronGeometry args={[0.42, 0]} />
-          <meshStandardMaterial
-            color="#0c1410"
-            emissive="#f4b400"
-            emissiveIntensity={0.55}
-            metalness={0.9}
-            roughness={0.2}
-          />
-        </mesh>
-      </group>
-
-      {/* Orbiting threats */}
-      {Array.from({ length: NUM_THREATS }).map((_, i) => (
-        <mesh key={i} ref={(r) => (threatRefs.current[i] = r)}>
-          <sphereGeometry args={[0.07, 10, 10]} />
-          <meshBasicMaterial color="#ff4747" toneMapped={false} />
-        </mesh>
+      {/* Terminal body lines */}
+      {lines.map((line, i) => (
+        <Text
+          key={i}
+          position={[-1.7, 0.72 - i * 0.21, 0.04]}
+          fontSize={0.118}
+          color={colorFor(line.kind)}
+          anchorX="left"
+          anchorY="middle"
+          maxWidth={3.4}
+          material-toneMapped={false}
+        >
+          {line.txt}
+        </Text>
       ))}
-    </group>
-  );
-}
 
-/* ============================================================
- * RADAR — angled radar dish with sweep line and blips (Skills)
- * ============================================================ */
-function RadarScene() {
-  const sweepRef = useRef();
-  const NUM_BLIPS = 8;
-  const blipsRef = useRef([]);
-  const blipState = useRef(
-    Array.from({ length: NUM_BLIPS }, () => ({
-      angle: Math.random() * Math.PI * 2,
-      r: 0.5 + Math.random() * 1.6,
-      life: 0.5 + Math.random() * 2.5,
-    }))
-  );
-
-  useFrame((state, dt) => {
-    if (sweepRef.current) {
-      sweepRef.current.rotation.z -= dt * 0.85;
-    }
-    blipState.current.forEach((b, i) => {
-      b.life -= dt;
-      const blip = blipsRef.current[i];
-      if (!blip) return;
-      if (b.life <= 0) {
-        b.angle = Math.random() * Math.PI * 2;
-        b.r = 0.5 + Math.random() * 1.6;
-        b.life = 1.5 + Math.random() * 2.5;
-        blip.position.set(Math.cos(b.angle) * b.r, 0, Math.sin(b.angle) * b.r);
-      }
-      const op = Math.max(0, Math.min(1, b.life / 2));
-      const mat = blip.material;
-      if (mat) mat.opacity = op;
-      // Pulse scale
-      const pulse = 0.6 + Math.sin(state.clock.elapsedTime * 4 + i) * 0.4;
-      blip.scale.setScalar(pulse);
-    });
-  });
-
-  return (
-    <group rotation={[-Math.PI / 2.5, 0, 0]}>
-      {/* Concentric rings */}
-      {[0.6, 1.1, 1.6, 2.1].map((r, i) => (
-        <mesh key={i} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[r, 0.006, 6, 80]} />
-          <meshBasicMaterial color="#00ff88" transparent opacity={0.42 - i * 0.07} toneMapped={false} />
-        </mesh>
-      ))}
-      {/* Cross-hairs */}
-      <mesh>
-        <boxGeometry args={[4.4, 0.012, 0.012]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.22} toneMapped={false} />
-      </mesh>
-      <mesh>
-        <boxGeometry args={[0.012, 0.012, 4.4]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.22} toneMapped={false} />
-      </mesh>
-      {/* Diagonal grid lines */}
-      <mesh rotation={[0, Math.PI / 4, 0]}>
-        <boxGeometry args={[4.4, 0.008, 0.008]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.14} toneMapped={false} />
-      </mesh>
-      <mesh rotation={[0, -Math.PI / 4, 0]}>
-        <boxGeometry args={[4.4, 0.008, 0.008]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.14} toneMapped={false} />
-      </mesh>
-
-      {/* Sweep line + cone */}
-      <group ref={sweepRef} rotation={[Math.PI / 2, 0, 0]}>
-        <mesh position={[1.05, 0, 0]}>
-          <boxGeometry args={[2.1, 0.014, 0.014]} />
+      {/* Active prompt + blinking cursor */}
+      <Text
+        position={[-1.7, 0.72 - 7 * 0.21, 0.04]}
+        fontSize={0.118}
+        color="#f4b400"
+        anchorX="left"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        $
+      </Text>
+      {cursorOn && (
+        <mesh position={[-1.55, 0.72 - 7 * 0.21, 0.04]}>
+          <planeGeometry args={[0.08, 0.16]} />
           <meshBasicMaterial color="#00ff88" toneMapped={false} />
         </mesh>
-        {/* Trailing fan */}
-        <mesh position={[0.6, 0, -0.4]} rotation={[0, 0, -Math.PI / 8]}>
-          <planeGeometry args={[1.6, 1.0]} />
-          <meshBasicMaterial color="#00ff88" transparent opacity={0.13} side={THREE.DoubleSide} toneMapped={false} />
-        </mesh>
-      </group>
+      )}
+    </group>
+  );
+}
 
-      {/* Blips */}
-      {Array.from({ length: NUM_BLIPS }).map((_, i) => {
-        const initial = blipState.current[i];
-        return (
-          <mesh
-            key={i}
-            ref={(r) => (blipsRef.current[i] = r)}
-            position={[Math.cos(initial.angle) * initial.r, 0, Math.sin(initial.angle) * initial.r]}
-          >
-            <sphereGeometry args={[0.07, 12, 12]} />
-            <meshBasicMaterial color="#f4b400" transparent toneMapped={false} />
-          </mesh>
-        );
-      })}
+/* ============================================================
+ * CRT (Projects)
+ * ============================================================ */
+function CrtScene() {
+  const groupRef = useRef();
+  const flickerRef = useRef();
+  const ledRef = useRef();
+  const flickerTimer = useRef(0);
 
-      {/* Center node */}
-      <mesh>
-        <sphereGeometry args={[0.1, 14, 14]} />
+  useFrame((state, dt) => {
+    const t = state.clock.elapsedTime;
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(t * 0.24) * 0.22;
+      groupRef.current.rotation.x = -0.04 + Math.cos(t * 0.2) * 0.05;
+    }
+    flickerTimer.current += dt;
+    if (flickerTimer.current > 0.07) {
+      flickerTimer.current = 0;
+      if (flickerRef.current && flickerRef.current.material) {
+        flickerRef.current.material.opacity = 0.025 + Math.random() * 0.04;
+      }
+    }
+    if (ledRef.current) {
+      const pulse = 0.6 + Math.sin(t * 2.5) * 0.4;
+      ledRef.current.scale.setScalar(pulse);
+    }
+  });
+
+  const projects = [
+    { txt: '[01] Elegchos       CAPSTONE', kind: 'capstone' },
+    { txt: '[02] Wazuh SIEM     DONE', kind: 'done' },
+    { txt: '[03] DFIR Triage    DONE', kind: 'done' },
+    { txt: '[04] Pentest Frame  FEATURED', kind: 'feat' },
+    { txt: '[05] LSTM/XGBoost   DONE', kind: 'done' },
+    { txt: '[06] ESCS Research  ACTIVE', kind: 'active' },
+    { txt: '[07] Linux Kit      DONE', kind: 'done' },
+    { txt: '[08] Gmail Monitor  DONE', kind: 'done' },
+  ];
+
+  const colorFor = (k) =>
+    k === 'capstone' ? '#f4b400' :
+    k === 'feat' ? '#f4b400' :
+    k === 'active' ? '#00ff88' :
+    '#cfd6cb';
+
+  return (
+    <group ref={groupRef}>
+      {/* CRT chassis */}
+      <mesh position={[0, 0, -0.2]}>
+        <boxGeometry args={[3.6, 2.6, 0.4]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.45} roughness={0.55} />
+      </mesh>
+      {/* Inner bezel cutout */}
+      <mesh position={[0, 0.1, 0.005]}>
+        <planeGeometry args={[3.0, 2.0]} />
+        <meshBasicMaterial color="#001b0e" />
+      </mesh>
+      {/* Scanline grid */}
+      <mesh position={[0, 0.1, 0.01]}>
+        <planeGeometry args={[3.0, 2.0]} />
+        <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.05} toneMapped={false} />
+      </mesh>
+      {/* Random flicker */}
+      <mesh ref={flickerRef} position={[0, 0.1, 0.012]}>
+        <planeGeometry args={[3.0, 2.0]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.03} toneMapped={false} />
+      </mesh>
+
+      {/* Title in CRT */}
+      <Text
+        position={[0, 0.97, 0.02]}
+        fontSize={0.11}
+        color="#00ff88"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        DFIR_PROJECTS.LOG
+      </Text>
+
+      {/* Project list */}
+      {projects.map((p, i) => (
+        <Text
+          key={i}
+          position={[-1.36, 0.73 - i * 0.18, 0.02]}
+          fontSize={0.1}
+          color={colorFor(p.kind)}
+          anchorX="left"
+          anchorY="middle"
+          material-toneMapped={false}
+        >
+          {p.txt}
+        </Text>
+      ))}
+
+      {/* Bottom: status line */}
+      <Text
+        position={[0, -0.74, 0.02]}
+        fontSize={0.085}
+        color="#7c8c80"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        8 records · log ok · uptime 0d 00:21:14
+      </Text>
+
+      {/* Power LED */}
+      <mesh ref={ledRef} position={[1.25, -0.95, 0.012]}>
+        <sphereGeometry args={[0.04, 12, 12]} />
         <meshBasicMaterial color="#00ff88" toneMapped={false} />
       </mesh>
-      <mesh>
-        <sphereGeometry args={[0.18, 14, 14]} />
-        <meshBasicMaterial color="#00ff88" transparent opacity={0.22} toneMapped={false} />
+      {/* Stand */}
+      <mesh position={[0, -1.45, 0]}>
+        <boxGeometry args={[1.3, 0.18, 0.5]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.45} roughness={0.55} />
+      </mesh>
+      <mesh position={[0, -1.6, 0]}>
+        <boxGeometry args={[2.0, 0.1, 0.55]} />
+        <meshStandardMaterial color="#1a1a1a" metalness={0.45} roughness={0.55} />
       </mesh>
     </group>
   );
 }
 
 /* ============================================================
- * CIPHER — matrix-style falling glyphs in 3D (Contact)
+ * CIPHER — matrix-style falling glyph stream (Skills)
  * ============================================================ */
 const GLYPHS = '01<>!@#$%&*ΞΨΔΦΩabcdefABCDEF';
 
 function CipherColumn({ x, speed, length, glyphSeed }) {
   const groupRef = useRef();
-  const [glyphList] = React.useState(() =>
-    Array.from({ length }, (_, i) => GLYPHS[(glyphSeed + i * 3) % GLYPHS.length])
-  );
+  const [swapTick, setSwapTick] = useState(0);
   const swapTimer = useRef(0);
-  const [swapTick, setSwapTick] = React.useState(0);
 
-  useFrame((state, dt) => {
+  useFrame((_, dt) => {
     if (groupRef.current) {
       groupRef.current.position.y -= dt * speed;
-      // Loop top
-      if (groupRef.current.position.y < -2.5 - length * 0.45) {
+      if (groupRef.current.position.y < -2.6 - length * 0.42) {
         groupRef.current.position.y = 2.6;
       }
     }
@@ -340,15 +281,15 @@ function CipherColumn({ x, speed, length, glyphSeed }) {
 
   return (
     <group ref={groupRef} position={[x, 2.6, 0]}>
-      {glyphList.map((_, i) => {
+      {Array.from({ length }, (_, i) => {
         const isHead = i === 0;
         const opacity = isHead ? 1 : Math.max(0.08, 1 - i * 0.13);
         const ch = GLYPHS[(swapTick + i * 5 + glyphSeed) % GLYPHS.length];
         return (
           <Text
             key={i}
-            position={[0, -i * 0.45, 0]}
-            fontSize={0.34}
+            position={[0, -i * 0.42, 0]}
+            fontSize={0.32}
             color={isHead ? '#ffffff' : '#00ff88'}
             anchorX="center"
             anchorY="middle"
@@ -377,17 +318,17 @@ function CipherScene() {
   );
 
   return (
-    <group rotation={[0, -0.15, 0]}>
+    <group rotation={[0, -0.12, 0]}>
       {cols.map((c, i) => (
         <CipherColumn key={i} {...c} />
       ))}
-      {/* Side accent: a vertical "secure channel" indicator */}
+      {/* Side rails */}
       <mesh position={[-2.0, 0, 0]}>
-        <boxGeometry args={[0.02, 4, 0.02]} />
+        <boxGeometry args={[0.018, 4, 0.018]} />
         <meshBasicMaterial color="#00ff88" transparent opacity={0.4} toneMapped={false} />
       </mesh>
       <mesh position={[2.0, 0, 0]}>
-        <boxGeometry args={[0.02, 4, 0.02]} />
+        <boxGeometry args={[0.018, 4, 0.018]} />
         <meshBasicMaterial color="#00ff88" transparent opacity={0.4} toneMapped={false} />
       </mesh>
     </group>
@@ -395,26 +336,185 @@ function CipherScene() {
 }
 
 /* ============================================================
- * Variant registry + default Canvas wrapper
+ * HANDSHAKE — encrypted comms client ↔ lock ↔ server (Contact)
+ * ============================================================ */
+function HandshakeScene() {
+  const lockRef = useRef();
+  const NUM_PACKETS = 5;
+  const packetRefs = useRef([]);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    if (lockRef.current) {
+      lockRef.current.rotation.y = t * 0.5;
+    }
+    packetRefs.current.forEach((p, i) => {
+      if (!p) return;
+      const period = 3.5;
+      const localT = ((t + i * 0.7) % period) / period; // 0..1
+      const x = -1.9 + localT * 3.8;
+      const y = Math.sin(localT * Math.PI) * 0.45;
+      p.position.set(x, y, 0);
+      const mat = p.material;
+      if (mat) {
+        if (x < -0.05) {
+          mat.color.set('#00ff88');
+        } else if (localT < 0.55) {
+          mat.color.set('#ffffff');
+        } else {
+          mat.color.set('#f4b400');
+        }
+      }
+      const pulse = 0.55 + Math.sin(localT * Math.PI) * 0.55;
+      p.scale.setScalar(pulse);
+    });
+  });
+
+  return (
+    <group>
+      {/* Connection line behind everything */}
+      <mesh position={[0, 0, -0.05]}>
+        <boxGeometry args={[3.6, 0.012, 0.012]} />
+        <meshBasicMaterial color="#00ff88" transparent opacity={0.32} toneMapped={false} />
+      </mesh>
+
+      {/* Endpoint A — CLIENT (left) */}
+      <mesh position={[-1.95, 0, 0]}>
+        <octahedronGeometry args={[0.34, 0]} />
+        <meshStandardMaterial
+          color="#0a2018"
+          emissive="#00ff88"
+          emissiveIntensity={0.6}
+          metalness={0.85}
+          roughness={0.2}
+        />
+      </mesh>
+      <mesh position={[-1.95, 0, 0]}>
+        <octahedronGeometry args={[0.46, 0]} />
+        <meshBasicMaterial color="#00ff88" wireframe transparent opacity={0.5} toneMapped={false} />
+      </mesh>
+
+      {/* Endpoint B — SERVER (right) */}
+      <mesh position={[1.95, 0, 0]}>
+        <octahedronGeometry args={[0.34, 0]} />
+        <meshStandardMaterial
+          color="#1a1408"
+          emissive="#f4b400"
+          emissiveIntensity={0.55}
+          metalness={0.85}
+          roughness={0.22}
+        />
+      </mesh>
+      <mesh position={[1.95, 0, 0]}>
+        <octahedronGeometry args={[0.46, 0]} />
+        <meshBasicMaterial color="#f4b400" wireframe transparent opacity={0.5} toneMapped={false} />
+      </mesh>
+
+      {/* Lock symbol in middle (rotates) */}
+      <group ref={lockRef}>
+        {/* Padlock body */}
+        <mesh position={[0, -0.05, 0]}>
+          <boxGeometry args={[0.32, 0.28, 0.2]} />
+          <meshStandardMaterial
+            color="#0a2018"
+            emissive="#00ff88"
+            emissiveIntensity={0.5}
+            metalness={0.92}
+            roughness={0.18}
+          />
+        </mesh>
+        {/* Padlock shackle (half-torus, U-shape) */}
+        <mesh position={[0, 0.13, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.13, 0.025, 8, 18, Math.PI]} />
+          <meshStandardMaterial
+            color="#0a2018"
+            emissive="#00ff88"
+            emissiveIntensity={0.55}
+            metalness={0.95}
+            roughness={0.18}
+          />
+        </mesh>
+        {/* Keyhole */}
+        <mesh position={[0, -0.05, 0.105]}>
+          <circleGeometry args={[0.05, 18]} />
+          <meshBasicMaterial color="#f4b400" toneMapped={false} />
+        </mesh>
+      </group>
+
+      {/* Traveling packets */}
+      {Array.from({ length: NUM_PACKETS }).map((_, i) => (
+        <mesh key={i} ref={(r) => (packetRefs.current[i] = r)} position={[-1.8, 0, 0]}>
+          <boxGeometry args={[0.13, 0.06, 0.06]} />
+          <meshBasicMaterial color="#00ff88" toneMapped={false} />
+        </mesh>
+      ))}
+
+      {/* Labels */}
+      <Text
+        position={[-1.95, -0.62, 0]}
+        fontSize={0.14}
+        color="#00ff88"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        CLIENT
+      </Text>
+      <Text
+        position={[1.95, -0.62, 0]}
+        fontSize={0.14}
+        color="#f4b400"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        SERVER
+      </Text>
+      <Text
+        position={[0, 0.6, 0]}
+        fontSize={0.115}
+        color="#cfd6cb"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        TLS 1.3 · AES-256
+      </Text>
+      <Text
+        position={[0, -0.62, 0]}
+        fontSize={0.085}
+        color="#7c8c80"
+        anchorX="center"
+        anchorY="middle"
+        material-toneMapped={false}
+      >
+        handshake · authenticated
+      </Text>
+    </group>
+  );
+}
+
+/* ============================================================
+ * Variant registry + Canvas wrapper
  * ============================================================ */
 const VARIANTS = {
-  biometric: BiometricScene,
-  shield: ShieldScene,
-  radar: RadarScene,
+  terminal: TerminalScene,
+  crt: CrtScene,
   cipher: CipherScene,
+  handshake: HandshakeScene,
 };
 
 const VARIANT_FLOAT = {
-  biometric: { speed: 0.5, rot: 0.25, float: 0.3 },
-  shield:    { speed: 0.6, rot: 0.3,  float: 0.35 },
-  radar:     { speed: 0.0, rot: 0.0,  float: 0.0 }, // Radar should stay flat
-  cipher:    { speed: 0.0, rot: 0.0,  float: 0.0 }, // Code rain stays vertical
+  terminal:  { speed: 0.4, rot: 0.15, float: 0.18 },
+  crt:       { speed: 0.4, rot: 0.15, float: 0.18 },
+  cipher:    { speed: 0.0, rot: 0.0,  float: 0.0 },
+  handshake: { speed: 0.5, rot: 0.2,  float: 0.25 },
 };
 
-export default function HeroWidget({ variant = 'biometric' }) {
-  const Scene = VARIANTS[variant] || VARIANTS.biometric;
-  const floatCfg = VARIANT_FLOAT[variant] || VARIANT_FLOAT.biometric;
-  const useFloat = floatCfg.speed > 0;
+export default function HeroWidget({ variant = 'terminal' }) {
+  const Scene = VARIANTS[variant] || VARIANTS.terminal;
+  const fc = VARIANT_FLOAT[variant] || VARIANT_FLOAT.terminal;
+  const useFloat = fc.speed > 0;
 
   return (
     <div className="hero-widget" aria-hidden="true">
@@ -424,11 +524,11 @@ export default function HeroWidget({ variant = 'biometric' }) {
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.35} />
-          <pointLight position={[3, 3, 3]} intensity={1.1} color="#00ff88" />
-          <pointLight position={[-2, -1, -1]} intensity={0.6} color="#f4b400" />
+          <ambientLight intensity={0.4} />
+          <pointLight position={[3, 3, 3]} intensity={1.0} color="#00ff88" />
+          <pointLight position={[-2, -1, -1]} intensity={0.55} color="#f4b400" />
           {useFloat ? (
-            <Float speed={floatCfg.speed} rotationIntensity={floatCfg.rot} floatIntensity={floatCfg.float}>
+            <Float speed={fc.speed} rotationIntensity={fc.rot} floatIntensity={fc.float}>
               <Scene />
             </Float>
           ) : (
