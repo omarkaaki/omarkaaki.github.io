@@ -81,9 +81,9 @@ function Edges({ nodes, edges }) {
         />
       </bufferGeometry>
       <lineBasicMaterial
-        color="#00ffc8"
+        color="#d62c1a"
         transparent
-        opacity={0.2}
+        opacity={0.22}
         toneMapped={false}
       />
     </lineSegments>
@@ -96,10 +96,12 @@ function Nodes({ nodes }) {
   const phases = useMemo(() => nodes.map(() => Math.random() * Math.PI * 2), [nodes]);
   const alerts = useRef(nodes.map(() => 0));
   const colors = useMemo(() => {
+    // Mr. Robot palette: dominant red, amber accent, occasional gray.
     const palette = [
-      new THREE.Color('#00ffc8'),
-      new THREE.Color('#6e8eff'),
-      new THREE.Color('#a855f7'),
+      new THREE.Color('#d62c1a'), // signal red
+      new THREE.Color('#d62c1a'),
+      new THREE.Color('#f4b400'), // CRT amber
+      new THREE.Color('#888888'), // muted gray
     ];
     const arr = new Float32Array(nodes.length * 3);
     nodes.forEach((_, i) => {
@@ -131,8 +133,9 @@ function Nodes({ nodes }) {
       let scale = breathe;
       if (alerts.current[i] > 0) {
         alerts.current[i] -= dt;
-        scale *= 1.8;
-        tmpColor.set('#ff5f6d');
+        scale *= 1.9;
+        // Bright white-hot flash for the "alert" — pops against the red graph
+        tmpColor.set('#ffffff');
       } else {
         if (Math.random() < 0.00045) {
           alerts.current[i] = 0.55;
@@ -191,9 +194,10 @@ function Pulses({ nodes, edges }) {
       dummy.scale.setScalar(0.5 + brightness * 0.9);
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
+      // Pulses are amber CRT-glow → bright white at peak
       meshRef.current.setColorAt(
         i,
-        pulseColor.setRGB(brightness, brightness * 1.0, brightness * 0.92)
+        pulseColor.setRGB(brightness, brightness * 0.78, brightness * 0.32)
       );
     });
     meshRef.current.instanceMatrix.needsUpdate = true;
@@ -245,9 +249,9 @@ function Lights() {
   return (
     <>
       <ambientLight intensity={0.25} />
-      <pointLight position={[3, 3, 3]} intensity={1.2} color="#00ffc8" />
-      <pointLight position={[-3, -2, -2]} intensity={0.8} color="#a855f7" />
-      <pointLight position={[0, -3, 2]} intensity={0.5} color="#6e8eff" />
+      <pointLight position={[3, 3, 3]} intensity={1.3} color="#d62c1a" />
+      <pointLight position={[-3, -2, -2]} intensity={0.7} color="#f4b400" />
+      <pointLight position={[0, -3, 2]} intensity={0.4} color="#ffffff" />
     </>
   );
 }

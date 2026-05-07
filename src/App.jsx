@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
@@ -14,9 +14,16 @@ import Projects from './pages/Projects';
 import Skills from './pages/Skills';
 import Contact from './pages/Contact';
 
+const Scene3D = lazy(() => import('./components/Scene3D'));
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   React.useEffect(() => {
+    // Lenis owns scroll once it mounts; tell it to jump first, then ensure
+    // the browser's own scroll is also at the top as a safety net.
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { immediate: true, force: true });
+    }
     window.scrollTo(0, 0);
   }, [pathname]);
   return null;
@@ -67,6 +74,10 @@ export default function App() {
       <SmoothScroll>
         <ScrollToTop />
         <CustomCursor />
+        {/* Persistent 3D scene — visible behind every page */}
+        <Suspense fallback={null}>
+          <Scene3D />
+        </Suspense>
         <ParticleCanvas />
         <StatusBar />
         <Navbar />

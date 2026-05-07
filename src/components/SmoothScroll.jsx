@@ -4,6 +4,7 @@ import Lenis from 'lenis';
 /**
  * Mounts a Lenis smooth-scroll instance for the whole page.
  * Skipped automatically when the user prefers reduced motion.
+ * Exposes the instance on window.__lenis so route changes can force scroll-to-top.
  */
 export default function SmoothScroll({ children }) {
   const lenisRef = useRef(null);
@@ -19,6 +20,11 @@ export default function SmoothScroll({ children }) {
       touchMultiplier: 1.6,
     });
     lenisRef.current = lenis;
+    window.__lenis = lenis;
+
+    // Force to top once Lenis owns scrolling so a cached browser scroll
+    // position doesn't leave us mid-page on first paint.
+    lenis.scrollTo(0, { immediate: true, force: true });
 
     let rafId = 0;
     const raf = (time) => {
@@ -30,6 +36,7 @@ export default function SmoothScroll({ children }) {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      if (window.__lenis === lenis) delete window.__lenis;
     };
   }, []);
 

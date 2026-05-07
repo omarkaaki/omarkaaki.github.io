@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import InteractiveTerminal from '../components/InteractiveTerminal';
@@ -17,8 +17,6 @@ import {
   SkullIcon,
 } from '../components/Icons';
 
-const Scene3D = lazy(() => import('../components/Scene3D'));
-
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
   show: (delay = 0) => ({
@@ -31,10 +29,6 @@ const fadeUp = {
 export default function Home() {
   return (
     <>
-      <Suspense fallback={null}>
-        <Scene3D />
-      </Suspense>
-
       <section className="hero-cinema" aria-label="Intro">
         <div className="hero-cinema-grid container">
           <motion.div
