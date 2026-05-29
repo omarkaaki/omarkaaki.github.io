@@ -1,20 +1,16 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ParticleCanvas from './components/ParticleCanvas';
 import SmoothScroll from './components/SmoothScroll';
 import CustomCursor from './components/CustomCursor';
 import StatusBar from './components/StatusBar';
-import GrainOverlay from './components/GrainOverlay';
 import Home from './pages/Home';
 import About from './pages/About';
 import Projects from './pages/Projects';
 import Skills from './pages/Skills';
 import Contact from './pages/Contact';
-
-const Scene3D = lazy(() => import('./components/Scene3D'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -74,18 +70,12 @@ export default function App() {
       <SmoothScroll>
         <ScrollToTop />
         <CustomCursor />
-        {/* Persistent 3D scene — visible behind every page */}
-        <Suspense fallback={null}>
-          <Scene3D />
-        </Suspense>
-        <ParticleCanvas />
         <StatusBar />
         <Navbar />
         <main>
           <AnimatedRoutes />
         </main>
         <Footer />
-        <GrainOverlay />
       </SmoothScroll>
     </Router>
   );

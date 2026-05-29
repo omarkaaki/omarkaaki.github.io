@@ -6,9 +6,8 @@
 
 /* ===== Tokens (phosphor-green terminal palette) ===== */
 :root {
-  --bg: #060807;
+  --bg: #000000;
   --bg-soft: #0c1110;
-  --bg-grad: radial-gradient(ellipse at 50% 0%, #0a1410 0%, #060807 65%);
   --card: rgba(14, 18, 16, 0.62);
   --card-strong: #0e1614;
   --card-border: rgba(0, 255, 136, 0.16);
@@ -55,8 +54,6 @@ body {
   line-height: 1.65;
   color: var(--text);
   background: var(--bg);
-  background-image: var(--bg-grad);
-  background-attachment: fixed;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -197,56 +194,8 @@ html.lenis body {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* ===== 3D Scene (fixed full-bleed) ===== */
-.scene3d-fixed {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  transition: opacity 0.18s linear;
-}
-.scene3d-fixed canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* ===== Particle canvas (ambient backdrop) ===== */
-#particle-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-/* ===== Grain overlay ===== */
-.grain-overlay {
-  position: fixed;
-  inset: -50% -50% -50% -50%;
-  width: 200%;
-  height: 200%;
-  z-index: 9998;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-  image-rendering: pixelated;
-  opacity: 0.07;
-}
-
-/* Subtle scanline overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 255, 136, 0.012) 2px,
-    rgba(0, 255, 136, 0.012) 4px
-  );
-  pointer-events: none;
-  z-index: 9997;
-}
+/* Background is a solid static black (var(--bg)); the 3D scene, particle
+   canvas, grain overlay, and scanline layers were intentionally removed. */
 
 /* ===== HUD corners (reduced) ===== */
 .hud-corner {
@@ -1507,7 +1456,6 @@ h4 { font-size: 1rem; margin-bottom: 8px; }
   .meta-num { font-size: 1.3rem; }
   .nav-container { padding: 0 14px; }
   .navbar { top: 12px; }
-  .grain-overlay { display: none; }
   .status-bar-row { padding: 4px 10px; font-size: 0.6rem; }
 }
 
@@ -1524,13 +1472,10 @@ h4 { font-size: 1rem; margin-bottom: 8px; }
   }
   .reveal { opacity: 1; transform: none; }
   .tilt-card-inner { transform: none !important; }
-  .scene3d-fixed { display: none; }
-  .grain-overlay { display: none; }
 }
 
 /* ===== Print friendly fallback ===== */
 @media print {
-  #particle-canvas, .scene3d-fixed, .hud-corner, .grain-overlay,
-  .cursor-ring, .cursor-dot, .status-bar { display: none; }
+  .hud-corner, .cursor-ring, .cursor-dot, .status-bar { display: none; }
   body { background: white; color: black; }
 }
